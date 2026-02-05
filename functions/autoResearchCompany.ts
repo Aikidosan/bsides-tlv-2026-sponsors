@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
         - latest_funding_date: Date of latest funding round
         - investor_count: Number of investors
         - employee_count: Approximate number of employees
-        - decision_makers: Array of key decision makers BASED IN ISRAEL with their names, titles, and LinkedIn profile URLs. IMPORTANT: Specifically find and include the CFO, CTO, HR Director/VP, and Marketing Director/VP/CMO roles if they exist in Israel. Focus on Israeli team members only.
+        - decision_makers: Array of key decision makers BASED IN ISRAEL with their names, titles, and LinkedIn profile URLs. IMPORTANT: Specifically find and include the CFO, CTO, HR Director/VP, Marketing Director/VP/CMO, and Sales Director/VP roles if they exist in Israel. Focus on Israeli team members only.
 
         Be thorough and accurate. For Israeli companies, prioritize Israeli databases and sources. If a field is not available, use null.`,
             add_context_from_internet: true,
