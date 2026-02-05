@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, User, Flag, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar, User, Flag, ArrowRight, Sparkles } from "lucide-react";
 import { format, isPast } from "date-fns";
 
 const priorityColors = {
@@ -20,7 +21,7 @@ const categoryColors = {
   general: "bg-gray-100 text-gray-800"
 };
 
-export default function TaskCard({ task, onClick, onStatusChange }) {
+export default function TaskCard({ task, onClick, onStatusChange, onAIAssist }) {
   const isOverdue = task.deadline && isPast(new Date(task.deadline)) && task.status !== 'done';
 
   return (
@@ -68,19 +69,33 @@ export default function TaskCard({ task, onClick, onStatusChange }) {
           </div>
         )}
 
-        {task.status !== 'done' && (
-          <button
+        <div className="flex gap-2 mt-2">
+          {task.status !== 'done' && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                const nextStatus = task.status === 'todo' ? 'in_progress' : 'done';
+                onStatusChange(nextStatus);
+              }}
+              className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800"
+            >
+              <ArrowRight className="w-3 h-3" />
+              <span>Move to {task.status === 'todo' ? 'In Progress' : 'Done'}</span>
+            </button>
+          )}
+          <Button
+            size="sm"
+            variant="outline"
             onClick={(e) => {
               e.stopPropagation();
-              const nextStatus = task.status === 'todo' ? 'in_progress' : 'done';
-              onStatusChange(nextStatus);
+              onAIAssist(task);
             }}
-            className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 mt-2"
+            className="h-6 px-2 text-xs border-purple-300 text-purple-700 hover:bg-purple-50"
           >
-            <ArrowRight className="w-3 h-3" />
-            <span>Move to {task.status === 'todo' ? 'In Progress' : 'Done'}</span>
-          </button>
-        )}
+            <Sparkles className="w-3 h-3 mr-1" />
+            AI Help
+          </Button>
+        </div>
       </div>
     </Card>
   );

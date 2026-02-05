@@ -7,10 +7,12 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import TaskBoard from '../components/tasks/TaskBoard';
 import TaskDialog from '../components/tasks/TaskDialog';
+import TaskAIAssistant from '../components/tasks/TaskAIAssistant';
 
 export default function Tasks() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [statusFilter, setStatusFilter] = useState(null);
   const queryClient = useQueryClient();
 
@@ -94,9 +96,13 @@ export default function Tasks() {
         ) : (
           <TaskBoard
             tasks={tasks || []}
-            onTaskClick={(task) => {
+            onTaskClick={(task, openAI = false) => {
               setSelectedTask(task);
-              setShowDialog(true);
+              if (openAI) {
+                setShowAIAssistant(true);
+              } else {
+                setShowDialog(true);
+              }
             }}
             onStatusChange={handleStatusChange}
             highlightStatus={statusFilter}
@@ -113,6 +119,17 @@ export default function Tasks() {
             }}
             onSave={handleSave}
             isSaving={createMutation.isPending || updateMutation.isPending}
+          />
+        )}
+
+        {/* AI Assistant */}
+        {showAIAssistant && selectedTask && (
+          <TaskAIAssistant
+            task={selectedTask}
+            onClose={() => {
+              setShowAIAssistant(false);
+              setSelectedTask(null);
+            }}
           />
         )}
       </div>

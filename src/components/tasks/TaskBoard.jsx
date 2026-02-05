@@ -8,7 +8,7 @@ const columns = [
   { id: 'done', title: 'Done', color: 'bg-green-100' }
 ];
 
-export default function TaskBoard({ tasks, onTaskClick, onStatusChange, highlightStatus }) {
+export default function TaskBoard({ tasks, onTaskClick, onStatusChange, highlightStatus, onAIAssist }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {columns.map(column => {
@@ -32,6 +32,7 @@ export default function TaskBoard({ tasks, onTaskClick, onStatusChange, highligh
                   task={task}
                   onClick={() => onTaskClick(task)}
                   onStatusChange={(newStatus) => onStatusChange(task, newStatus)}
+                  onAIAssist={(task) => onTaskClick(task, true)}
                 />
               ))}
               {columnTasks.length === 0 && (
