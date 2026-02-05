@@ -78,14 +78,34 @@ Deno.serve(async (req) => {
         const updateData = {};
         
         // Only update fields that came back from research and weren't already set
-        if (response.website && !existingCompany?.website) updateData.website = response.website;
-        if (response.industry && !existingCompany?.industry) updateData.industry = response.industry;
-        if (response.size && !existingCompany?.size) updateData.size = response.size;
-        if (response.headquarters && !existingCompany?.headquarters) updateData.headquarters = response.headquarters;
-        if (response.funding_raised && !existingCompany?.funding_raised) updateData.funding_raised = response.funding_raised;
-        if (response.valuation && !existingCompany?.valuation) updateData.valuation = response.valuation;
-        if (response.investor_count && !existingCompany?.investor_count) updateData.investor_count = response.investor_count;
-        if (response.employee_count && !existingCompany?.employee_count) updateData.employee_count = response.employee_count;
+         if (response.website && !existingCompany?.website) updateData.website = response.website;
+         if (response.industry && !existingCompany?.industry) updateData.industry = response.industry;
+         if (response.size && !existingCompany?.size) updateData.size = response.size;
+         if (response.headquarters && !existingCompany?.headquarters) updateData.headquarters = response.headquarters;
+         if (response.funding_raised && !existingCompany?.funding_raised) updateData.funding_raised = response.funding_raised;
+         if (response.valuation && !existingCompany?.valuation) updateData.valuation = response.valuation;
+         if (response.investor_count && !existingCompany?.investor_count) updateData.investor_count = response.investor_count;
+         if (response.employee_count && !existingCompany?.employee_count) updateData.employee_count = response.employee_count;
+
+         // Extract specific roles from decision makers
+         if (response.decision_makers && response.decision_makers.length > 0) {
+             const cfo = response.decision_makers.find(dm => dm.title?.toLowerCase().includes('cfo'));
+             const marketing = response.decision_makers.find(dm => dm.title?.toLowerCase().match(/(marketing|cmo)/));
+             const sales = response.decision_makers.find(dm => dm.title?.toLowerCase().match(/(sales|revenue)/));
+
+             if (cfo && !existingCompany?.cfo_name) {
+                 updateData.cfo_name = cfo.name;
+                 updateData.cfo_email = cfo.email || null;
+             }
+             if (marketing && !existingCompany?.marketing_name) {
+                 updateData.marketing_name = marketing.name;
+                 updateData.marketing_email = marketing.email || null;
+             }
+             if (sales && !existingCompany?.sales_name) {
+                 updateData.sales_name = sales.name;
+                 updateData.sales_email = sales.email || null;
+             }
+         }
         
         // For decision makers, merge with existing ones instead of replacing
         if (response.decision_makers && response.decision_makers.length > 0) {
