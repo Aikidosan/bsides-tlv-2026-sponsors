@@ -48,22 +48,22 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AIResearch from './pages/AIResearch';
+import AdminUsers from './pages/AdminUsers';
 import CEOOutreach from './pages/CEOOutreach';
 import Dashboard from './pages/Dashboard';
 import Messages from './pages/Messages';
 import Sponsors from './pages/Sponsors';
 import Tasks from './pages/Tasks';
-import AdminUsers from './pages/AdminUsers';
 
 
 export const PAGES = {
     "AIResearch": AIResearch,
+    "AdminUsers": AdminUsers,
     "CEOOutreach": CEOOutreach,
     "Dashboard": Dashboard,
     "Messages": Messages,
     "Sponsors": Sponsors,
     "Tasks": Tasks,
-    "AdminUsers": AdminUsers,
 }
 
 export const pagesConfig = {

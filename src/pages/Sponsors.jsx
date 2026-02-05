@@ -64,8 +64,17 @@ export default function Sponsors() {
   }).sort((a, b) => {
     switch (sortBy) {
       case 'size':
-        const sizeOrder = { enterprise: 5, large: 4, medium: 3, small: 2, startup: 1 };
-        return (sizeOrder[b.size] || 0) - (sizeOrder[a.size] || 0);
+        // Sort by market cap if available, otherwise fall back to size enum
+        if (a.market_cap && b.market_cap) {
+          return b.market_cap - a.market_cap;
+        } else if (a.market_cap) {
+          return -1;
+        } else if (b.market_cap) {
+          return 1;
+        } else {
+          const sizeOrder = { enterprise: 5, large: 4, medium: 3, small: 2, startup: 1 };
+          return (sizeOrder[b.size] || 0) - (sizeOrder[a.size] || 0);
+        }
       case 'trending':
         return new Date(b.updated_date) - new Date(a.updated_date);
       case 'alphabet':
