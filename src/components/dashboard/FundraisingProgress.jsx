@@ -4,10 +4,12 @@ import { Progress } from "@/components/ui/progress";
 import { DollarSign, Target, TrendingUp, Building2 } from "lucide-react";
 
 export default function FundraisingProgress({ companies }) {
-  const TARGET = 350000;
+  const TARGET_MIN = 350000;
+  const TARGET_MAX = 500000;
   
   const totalRaised = companies?.reduce((sum, c) => sum + (c.sponsorship_amount || 0), 0) || 0;
-  const percentage = Math.min((totalRaised / TARGET) * 100, 100);
+  const percentageMin = Math.min((totalRaised / TARGET_MIN) * 100, 100);
+  const percentageMax = (totalRaised / TARGET_MAX) * 100;
   
   const statusCounts = companies?.reduce((acc, c) => {
     acc[c.status] = (acc[c.status] || 0) + 1;
@@ -29,11 +31,14 @@ export default function FundraisingProgress({ companies }) {
               ${totalRaised.toLocaleString()}
             </span>
             <span className="text-sm text-gray-600">
-              of ${TARGET.toLocaleString()} goal
+              ${TARGET_MIN.toLocaleString()} - ${TARGET_MAX.toLocaleString()} goal
             </span>
           </div>
-          <Progress value={percentage} className="h-3 bg-indigo-100" />
-          <p className="text-xs text-gray-500 mt-1">{percentage.toFixed(1)}% reached</p>
+          <Progress value={percentageMin} className="h-3 bg-indigo-100" />
+          <div className="flex justify-between text-xs text-gray-500 mt-1">
+            <span>{percentageMin.toFixed(1)}% of minimum goal</span>
+            <span>{percentageMax.toFixed(1)}% of maximum goal</span>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
