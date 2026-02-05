@@ -480,7 +480,7 @@ export default function CEOOutreach() {
                   </Button>
                 </Link>
                 <Link to={createPageUrl('Sponsors')}>
-                  <Button variant="outline" className="border-white text-white hover:bg-white/20">
+                  <Button variant="secondary" className="bg-white/20 text-white border border-white/30 hover:bg-white/30">
                     Manage Pipeline
                   </Button>
                 </Link>
