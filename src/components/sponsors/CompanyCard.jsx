@@ -94,8 +94,20 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
             <div className="flex items-center gap-2 mb-2">
               <Building2 className="w-5 h-5 text-indigo-600" />
               <h3 className="font-bold text-lg">{company.name}</h3>
-              {company.stock_symbol && (
-                <Badge variant="outline" className="text-xs">
+              {company.profile_type === 'public' && (
+                <Badge className="bg-blue-100 text-blue-800 text-xs flex items-center gap-1">
+                  <Globe className="w-3 h-3" />
+                  Public
+                </Badge>
+              )}
+              {company.profile_type === 'private' && (
+                <Badge className="bg-gray-100 text-gray-800 text-xs flex items-center gap-1">
+                  <Lock className="w-3 h-3" />
+                  Private
+                </Badge>
+              )}
+              {company.profile_type === 'public' && company.stock_symbol && (
+                <Badge variant="outline" className="text-xs font-semibold">
                   {company.stock_symbol}
                 </Badge>
               )}
@@ -326,7 +338,7 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
           </Button>
         )}
 
-        {company.stock_symbol && !company.market_cap && (
+        {company.profile_type === 'public' && company.stock_symbol && !company.market_cap && (
           <Button
             size="sm"
             variant="outline"
