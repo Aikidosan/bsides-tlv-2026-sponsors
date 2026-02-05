@@ -8,14 +8,15 @@ const columns = [
   { id: 'done', title: 'Done', color: 'bg-green-100' }
 ];
 
-export default function TaskBoard({ tasks, onTaskClick, onStatusChange }) {
+export default function TaskBoard({ tasks, onTaskClick, onStatusChange, highlightStatus }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       {columns.map(column => {
         const columnTasks = tasks?.filter(t => t.status === column.id) || [];
+        const isHighlighted = highlightStatus === column.id;
         
         return (
-          <Card key={column.id} className="flex flex-col">
+          <Card key={column.id} className={`flex flex-col ${isHighlighted ? 'ring-2 ring-indigo-500 shadow-lg' : ''}`}>
             <CardHeader className={`${column.color} border-b`}>
               <CardTitle className="text-sm font-semibold flex items-center justify-between">
                 <span>{column.title}</span>
