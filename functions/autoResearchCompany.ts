@@ -28,23 +28,23 @@ Deno.serve(async (req) => {
         }
 
         // Research company using LLM with web search
-        const response = await base44.integrations.Core.InvokeLLM({
-            prompt: `Perform comprehensive research on the company: ${name}
-            
-Find and return the following information in JSON format. Use current, accurate data:
-- website: Company website URL
-- industry: Primary industry/sector (e.g., "Cybersecurity", "Cloud Computing")
-- size: Company size - one of: startup, small, medium, large, enterprise (based on employee count)
-- founded_year: Year the company was founded
-- headquarters: Company headquarters location (city, country)
-- funding_raised: Total funding raised in USD (if available)
-- valuation: Latest valuation in USD (if available)
-- latest_funding_date: Date of latest funding round
-- investor_count: Number of investors
-- employee_count: Approximate number of employees
-- decision_makers: Array of key decision makers with their names, titles, and LinkedIn profile URLs
+         const response = await base44.integrations.Core.InvokeLLM({
+             prompt: `Perform comprehensive research on the company: ${name}
 
-Be thorough and accurate. For Israeli companies, prioritize Israeli databases and sources. If a field is not available, use null.`,
+        Find and return the following information in JSON format. Use current, accurate data:
+        - website: Company website URL
+        - industry: Primary industry/sector (e.g., "Cybersecurity", "Cloud Computing")
+        - size: Company size - one of: startup, small, medium, large, enterprise (based on employee count)
+        - founded_year: Year the company was founded
+        - headquarters: Company headquarters location (city, country)
+        - funding_raised: Total funding raised in USD (if available)
+        - valuation: Latest valuation in USD (if available)
+        - latest_funding_date: Date of latest funding round
+        - investor_count: Number of investors
+        - employee_count: Approximate number of employees
+        - decision_makers: Array of key decision makers with their names, titles, and LinkedIn profile URLs. IMPORTANT: Specifically find and include the CFO, CTO, HR Director/VP, and Marketing Director/VP/CMO roles if they exist.
+
+        Be thorough and accurate. For Israeli companies, prioritize Israeli databases and sources. If a field is not available, use null.`,
             add_context_from_internet: true,
             response_json_schema: {
                 type: "object",
