@@ -77,6 +77,20 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
     }
   };
 
+  const handleLinkedInResearch = async (e) => {
+    e.stopPropagation();
+    setIsResearching(true);
+    try {
+      await base44.functions.invoke('linkedinResearch', { company_id: company.id });
+      window.location.reload();
+    } catch (error) {
+      console.error('LinkedIn research failed:', error);
+      alert('Failed to research decision makers. Please try again.');
+    } finally {
+      setIsResearching(false);
+    }
+  };
+
   const handleAutoResearch = async (e) => {
     e.stopPropagation();
     setIsAutoResearching(true);
@@ -323,11 +337,11 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
           </div>
         )}
 
-        {!company.decision_makers || company.decision_makers.length === 0 ? (
+        <div className="flex gap-2 mt-2">
           <Button
             size="sm"
             variant="outline"
-            className="w-full mt-2 border-blue-300 text-blue-700 hover:bg-blue-50"
+            className="flex-1 border-blue-300 text-blue-700 hover:bg-blue-50"
             onClick={handleLinkedInResearch}
             disabled={isResearching}
           >
@@ -339,31 +353,31 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
             ) : (
               <>
                 <Linkedin className="w-4 h-4 mr-2" />
-                Find Decision Makers
+                Decision Makers
               </>
             )}
           </Button>
-        ) : null}
 
-        <Button
-          size="sm"
-          variant="outline"
-          className="w-full mt-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50"
-          onClick={handleAutoResearch}
-          disabled={isAutoResearching}
-        >
-          {isAutoResearching ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Researching...
-            </>
-          ) : (
-            <>
-              <Sparkles className="w-4 h-4 mr-2" />
-              Auto Research
-            </>
-          )}
-        </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="flex-1 border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+            onClick={handleAutoResearch}
+            disabled={isAutoResearching}
+          >
+            {isAutoResearching ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Researching...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4 mr-2" />
+                Auto Research
+              </>
+            )}
+          </Button>
+        </div>
 
         {((company.profile_type === 'public' && company.stock_symbol && !company.market_cap) || 
           (company.profile_type === 'private' && !company.ai_research)) && (
