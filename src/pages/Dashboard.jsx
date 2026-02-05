@@ -83,7 +83,9 @@ export default function Dashboard() {
         {/* Main Stats */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <FundraisingProgress companies={companies || []} />
-          <TasksOverview tasks={tasks || []} />
+          <div>
+            <TasksOverview tasks={tasks || []} />
+          </div>
         </div>
 
         {/* Upcoming Tasks & Recent Activity */}
@@ -132,8 +134,10 @@ export default function Dashboard() {
             )}
           </div>
         </div>
+      </div>
 
-        {/* Countdown Clock */}
+      {/* Countdown Clock - Bottom */}
+      <div className="max-w-7xl mx-auto px-6 pb-6">
         <CountdownClock />
       </div>
     </div>

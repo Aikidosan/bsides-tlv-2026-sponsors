@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function TasksOverview({ tasks }) {
+  const [isExpanded, setIsExpanded] = React.useState(true);
   const EVENT_DATE = new Date('2026-06-01');
   const today = new Date();
   const daysUntilEvent = differenceInDays(EVENT_DATE, today);
@@ -23,8 +24,18 @@ export default function TasksOverview({ tasks }) {
     return new Date(t.deadline) < today;
   }).length || 0;
 
+  if (!isExpanded) {
+    return (
+      <div 
+        onClick={() => setIsExpanded(true)}
+        className="h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-full cursor-pointer hover:h-2 transition-all"
+        title="Click to expand tasks overview"
+      />
+    );
+  }
+
   return (
-    <Card>
+    <Card onClick={() => setIsExpanded(false)} className="cursor-pointer" title="Click to collapse">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CheckCircle2 className="w-5 h-5" />
