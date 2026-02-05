@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tantml/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Plus, ArrowLeft } from 'lucide-react';
+import { Plus, ArrowLeft, LayoutGrid, AlertCircle, User, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import TaskBoard from '../components/tasks/TaskBoard';
 import TaskDialog from '../components/tasks/TaskDialog';
 import TaskAIAssistant from '../components/tasks/TaskAIAssistant';
+import UrgencyView from '../components/tasks/UrgencyView';
+import OwnerView from '../components/tasks/OwnerView';
+import TimelineView from '../components/tasks/TimelineView';
 
 export default function Tasks() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [statusFilter, setStatusFilter] = useState(null);
+  const [viewMode, setViewMode] = useState('status');
   const queryClient = useQueryClient();
 
   // Handle URL parameters for status filter
@@ -64,7 +68,7 @@ export default function Tasks() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <Link to={createPageUrl('Dashboard')}>
               <Button variant="ghost" size="icon">
@@ -88,25 +92,113 @@ export default function Tasks() {
           </Button>
         </div>
 
-        {/* Task Board */}
+        {/* View Switcher */}
+        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-200">
+          <div className="flex gap-2 overflow-x-auto">
+            <Button
+              variant={viewMode === 'status' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('status')}
+              className="whitespace-nowrap"
+            >
+              <LayoutGrid className="w-4 h-4 mr-2" />
+              By Status
+            </Button>
+            <Button
+              variant={viewMode === 'urgency' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('urgency')}
+              className="whitespace-nowrap"
+            >
+              <AlertCircle className="w-4 h-4 mr-2" />
+              By Urgency
+            </Button>
+            <Button
+              variant={viewMode === 'owner' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('owner')}
+              className="whitespace-nowrap"
+            >
+              <User className="w-4 h-4 mr-2" />
+              By Owner
+            </Button>
+            <Button
+              variant={viewMode === 'timeline' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('timeline')}
+              className="whitespace-nowrap"
+            >
+              <Calendar className="w-4 h-4 mr-2" />
+              By Timeline
+            </Button>
+          </div>
+        </div>
+
+        {/* Task Views */}
         {isLoading ? (
           <div className="text-center py-12">
             <p className="text-gray-500">Loading tasks...</p>
           </div>
         ) : (
-          <TaskBoard
-            tasks={tasks || []}
-            onTaskClick={(task, openAI = false) => {
-              setSelectedTask(task);
-              if (openAI) {
-                setShowAIAssistant(true);
-              } else {
-                setShowDialog(true);
-              }
-            }}
-            onStatusChange={handleStatusChange}
-            highlightStatus={statusFilter}
-          />
+          <>
+            {viewMode === 'status' && (
+              <TaskBoard
+                tasks={tasks || []}
+                onTaskClick={(task, openAI = false) => {
+                  setSelectedTask(task);
+                  if (openAI) {
+                    setShowAIAssistant(true);
+                  } else {
+                    setShowDialog(true);
+                  }
+                }}
+                onStatusChange={handleStatusChange}
+                highlightStatus={statusFilter}
+              />
+            )}
+            {viewMode === 'urgency' && (
+              <UrgencyView
+                tasks={tasks || []}
+                onTaskClick={(task, openAI = false) => {
+                  setSelectedTask(task);
+                  if (openAI) {
+                    setShowAIAssistant(true);
+                  } else {
+                    setShowDialog(true);
+                  }
+                }}
+                onStatusChange={handleStatusChange}
+              />
+            )}
+            {viewMode === 'owner' && (
+              <OwnerView
+                tasks={tasks || []}
+                onTaskClick={(task, openAI = false) => {
+                  setSelectedTask(task);
+                  if (openAI) {
+                    setShowAIAssistant(true);
+                  } else {
+                    setShowDialog(true);
+                  }
+                }}
+                onStatusChange={handleStatusChange}
+              />
+            )}
+            {viewMode === 'timeline' && (
+              <TimelineView
+                tasks={tasks || []}
+                onTaskClick={(task, openAI = false) => {
+                  setSelectedTask(task);
+                  if (openAI) {
+                    setShowAIAssistant(true);
+                  } else {
+                    setShowDialog(true);
+                  }
+                }}
+                onStatusChange={handleStatusChange}
+              />
+            )}
+          </>
         )}
 
         {/* Task Dialog */}
