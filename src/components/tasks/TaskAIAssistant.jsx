@@ -49,14 +49,15 @@ export default function TaskAIAssistant({ task, onClose }) {
     });
   };
 
-  const handleSend = async () => {
-    if (!input.trim() || !conversation) return;
+  const handleSend = async (customInput) => {
+    const messageContent = customInput || input;
+    if (!messageContent.trim() || !conversation) return;
     
     setIsLoading(true);
     try {
       await base44.agents.addMessage(conversation, {
         role: "user",
-        content: input
+        content: messageContent
       });
       setInput('');
     } finally {
@@ -107,9 +108,34 @@ export default function TaskAIAssistant({ task, onClose }) {
                 {msg.role === 'user' ? (
                   <p className="text-sm">{msg.content}</p>
                 ) : (
-                  <ReactMarkdown className="text-sm prose prose-sm max-w-none">
-                    {msg.content}
-                  </ReactMarkdown>
+                  <>
+                    <ReactMarkdown className="text-sm prose prose-sm max-w-none">
+                      {msg.content}
+                    </ReactMarkdown>
+                    {msg.content?.includes('Can you confirm') && (
+                      <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-200">
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setInput('Yes, please proceed with those searches');
+                            handleSend();
+                          }}
+                          className="bg-purple-600 hover:bg-purple-700 text-white"
+                        >
+                          Yes, proceed
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setInput('No, let me provide different search terms');
+                          }}
+                        >
+                          No, modify
+                        </Button>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
