@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, ArrowLeft, Linkedin, Loader2, ArrowUpDown, Map } from 'lucide-react';
+import { Plus, Search, ArrowLeft, Linkedin, Loader2, ArrowUpDown, Map, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import CompanyCard from '../components/sponsors/CompanyCard';
@@ -97,11 +97,26 @@ export default function Sponsors() {
     }
   };
 
-  const handleBulkLinkedInResearch = async () => {
+  const handleBulkAutoResearch = async () => {
     setIsBulkResearching(true);
+    let processed = 0;
+    let failed = 0;
+    
     try {
-      const response = await base44.functions.invoke('bulkLinkedinResearch', {});
-      alert(`Research complete! Processed ${response.data.processed} companies, ${response.data.failed} failed.`);
+      for (const company of companies || []) {
+        try {
+          await base44.functions.invoke('autoResearchCompany', { 
+            company_id: company.id
+          });
+          processed++;
+        } catch (err) {
+          console.error(`Failed for ${company.name}:`, err);
+          failed++;
+        }
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
+      
+      alert(`Auto research complete! Processed ${processed} companies, ${failed} failed.`);
       queryClient.invalidateQueries(['companies']);
     } catch (error) {
       alert('Bulk research failed: ' + error.message);
@@ -183,9 +198,9 @@ export default function Sponsors() {
           </div>
           <div className="flex gap-2">
             <Button 
-              onClick={handleBulkLinkedInResearch}
+              onClick={handleBulkAutoResearch}
               variant="outline"
-              className="border-blue-300 text-blue-700 hover:bg-blue-50"
+              className="border-indigo-300 text-indigo-700 hover:bg-indigo-50"
               disabled={isBulkResearching}
             >
               {isBulkResearching ? (
@@ -195,8 +210,8 @@ export default function Sponsors() {
                 </>
               ) : (
                 <>
-                  <Linkedin className="w-4 h-4 mr-2" />
-                  Find All Decision Makers
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Auto Research All
                 </>
               )}
             </Button>

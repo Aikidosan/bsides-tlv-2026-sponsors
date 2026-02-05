@@ -29,6 +29,7 @@ const tierColors = {
 export default function CompanyCard({ company, onClick, onAIResearch }) {
   const [isResearching, setIsResearching] = useState(false);
   const [isFetchingFinancials, setIsFetchingFinancials] = useState(false);
+  const [isAutoResearching, setIsAutoResearching] = useState(false);
   const [showAddContact, setShowAddContact] = useState(false);
   const [isSavingContact, setIsSavingContact] = useState(false);
   const queryClient = useQueryClient();
@@ -73,6 +74,20 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
       alert('Failed to fetch financial data: ' + error.message);
     } finally {
       setIsFetchingFinancials(false);
+    }
+  };
+
+  const handleAutoResearch = async (e) => {
+    e.stopPropagation();
+    setIsAutoResearching(true);
+    try {
+      await base44.functions.invoke('autoResearchCompany', { company_id: company.id });
+      window.location.reload();
+    } catch (error) {
+      console.error('Auto research failed:', error);
+      alert('Failed to auto research: ' + error.message);
+    } finally {
+      setIsAutoResearching(false);
     }
   };
 
@@ -330,20 +345,25 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
           </Button>
         ) : null}
 
-        {!company.ai_research && onAIResearch && (
-          <Button
-            size="sm"
-            variant="outline"
-            className="w-full mt-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50"
-            onClick={(e) => {
-              e.stopPropagation();
-              onAIResearch(company);
-            }}
-          >
-            <Sparkles className="w-4 h-4 mr-2" />
-            Get AI Research
-          </Button>
-        )}
+        <Button
+          size="sm"
+          variant="outline"
+          className="w-full mt-2 border-indigo-300 text-indigo-700 hover:bg-indigo-50"
+          onClick={handleAutoResearch}
+          disabled={isAutoResearching}
+        >
+          {isAutoResearching ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Researching...
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-4 h-4 mr-2" />
+              Auto Research
+            </>
+          )}
+        </Button>
 
         {((company.profile_type === 'public' && company.stock_symbol && !company.market_cap) || 
           (company.profile_type === 'private' && !company.ai_research)) && (

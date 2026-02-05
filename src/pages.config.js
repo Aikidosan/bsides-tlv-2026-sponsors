@@ -52,9 +52,9 @@ import AdminUsers from './pages/AdminUsers';
 import CEOOutreach from './pages/CEOOutreach';
 import Dashboard from './pages/Dashboard';
 import Messages from './pages/Messages';
+import OutreachTracker from './pages/OutreachTracker';
 import Sponsors from './pages/Sponsors';
 import Tasks from './pages/Tasks';
-import OutreachTracker from './pages/OutreachTracker';
 import TeamCalendar from './pages/TeamCalendar';
 
 
@@ -64,9 +64,9 @@ export const PAGES = {
     "CEOOutreach": CEOOutreach,
     "Dashboard": Dashboard,
     "Messages": Messages,
+    "OutreachTracker": OutreachTracker,
     "Sponsors": Sponsors,
     "Tasks": Tasks,
-    "OutreachTracker": OutreachTracker,
     "TeamCalendar": TeamCalendar,
 }
 
