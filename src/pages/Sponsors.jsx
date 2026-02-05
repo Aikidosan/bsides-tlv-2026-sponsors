@@ -146,6 +146,20 @@ export default function Sponsors() {
     }
   };
 
+  const handleBulkImportIsraeli = async () => {
+    if (!window.confirm('This will import 100+ Israeli cybersecurity companies. Continue?')) {
+      return;
+    }
+    
+    try {
+      const response = await base44.functions.invoke('bulkImportIsraeliCybersecurity', {});
+      alert(`Import successful! Added ${response.data.count} companies to the pipeline.`);
+      queryClient.invalidateQueries(['companies']);
+    } catch (error) {
+      alert('Import failed: ' + error.message);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
       <div className="max-w-7xl mx-auto p-6 space-y-6">
@@ -203,6 +217,14 @@ export default function Sponsors() {
                   Fetch All Financial Data
                 </>
               )}
+            </Button>
+            <Button 
+              onClick={handleBulkImportIsraeli}
+              variant="outline"
+              className="border-purple-300 text-purple-700 hover:bg-purple-50"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Import Israeli Companies
             </Button>
             <Button 
               onClick={() => {
