@@ -64,6 +64,12 @@ export default function Dashboard() {
                   Messages
                 </Button>
               </Link>
+              <Link to={createPageUrl('CEOOutreach')}>
+                <Button variant="outline" className="border-indigo-300 text-indigo-700 hover:bg-indigo-50">
+                  <Building2 className="w-4 h-4 mr-2" />
+                  CEO Outreach
+                </Button>
+              </Link>
               <Link to={createPageUrl('AIResearch')}>
                 <Button variant="outline" className="border-purple-300 text-purple-700 hover:bg-purple-50">
                   <Sparkles className="w-4 h-4 mr-2" />
