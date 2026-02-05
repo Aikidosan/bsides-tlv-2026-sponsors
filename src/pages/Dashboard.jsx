@@ -7,6 +7,7 @@ import { createPageUrl } from '@/utils';
 import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar } from 'lucide-react';
 import FundraisingProgress from '../components/dashboard/FundraisingProgress';
 import TasksOverview from '../components/dashboard/TasksOverview';
+import CountdownClock from '../components/dashboard/CountdownClock';
 import { format } from 'date-fns';
 
 export default function Dashboard() {
@@ -125,6 +126,9 @@ export default function Dashboard() {
             )}
           </div>
         </div>
+
+        {/* Countdown Clock */}
+        <CountdownClock />
       </div>
     </div>
   );
