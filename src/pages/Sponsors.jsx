@@ -147,7 +147,7 @@ export default function Sponsors() {
   };
 
   const handleBulkImportIsraeli = async () => {
-    if (!window.confirm('This will import 100+ Israeli cybersecurity companies. Continue?')) {
+    if (!window.confirm('This will import 75+ Israeli cybersecurity companies. Continue?')) {
       return;
     }
     
