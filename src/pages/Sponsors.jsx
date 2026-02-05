@@ -16,6 +16,7 @@ export default function Sponsors() {
   const [showDialog, setShowDialog] = useState(false);
   const [isBulkResearching, setIsBulkResearching] = useState(false);
   const [isBulkFetchingFinancials, setIsBulkFetchingFinancials] = useState(false);
+  const [isBulkDecisionMakers, setIsBulkDecisionMakers] = useState(false);
   const [sortBy, setSortBy] = useState('updated');
   const [viewMode, setViewMode] = useState('grid');
   const queryClient = useQueryClient();
