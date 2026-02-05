@@ -51,7 +51,7 @@ export default function TaskAIAssistant({ task, onClose }) {
 
   const handleSend = async (customInput) => {
     const messageContent = customInput || input;
-    if (!messageContent.trim() || !conversation) return;
+    if (!messageContent || typeof messageContent !== 'string' || !messageContent.trim() || !conversation) return;
     
     setIsLoading(true);
     try {
@@ -116,10 +116,7 @@ export default function TaskAIAssistant({ task, onClose }) {
                       <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-200">
                         <Button
                           size="sm"
-                          onClick={() => {
-                            setInput('Yes, please proceed with those searches');
-                            handleSend();
-                          }}
+                          onClick={() => handleSend('Yes, please proceed with those searches')}
                           className="bg-purple-600 hover:bg-purple-700 text-white"
                         >
                           Yes, proceed
@@ -127,9 +124,7 @@ export default function TaskAIAssistant({ task, onClose }) {
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => {
-                            setInput('No, let me provide different search terms');
-                          }}
+                          onClick={() => setInput('No, let me provide different search terms')}
                         >
                           No, modify
                         </Button>
