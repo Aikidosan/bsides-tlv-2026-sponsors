@@ -15,14 +15,16 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Either company_id or company_name is required' }, { status: 400 });
         }
 
-        // Get company details if only ID provided
+        // Get existing company data
+        let existingCompany = null;
         let name = company_name;
-        if (company_id && !company_name) {
-            const company = await base44.entities.Company.filter({ id: company_id });
-            if (!company.length) {
+        if (company_id) {
+            const companies = await base44.entities.Company.filter({ id: company_id });
+            if (!companies.length) {
                 return Response.json({ error: 'Company not found' }, { status: 404 });
             }
-            name = company[0].name;
+            existingCompany = companies[0];
+            name = existingCompany.name;
         }
 
         // Research company using LLM with web search
@@ -72,19 +74,35 @@ Be thorough and accurate. For Israeli companies, prioritize Israeli databases an
             }
         });
 
-        // Prepare update data, filtering out null values and mapping to entity fields
+        // Prepare update data, preserving existing fields
         const updateData = {};
-        if (response.website) updateData.website = response.website;
-        if (response.industry) updateData.industry = response.industry;
-        if (response.size) updateData.size = response.size;
-        if (response.headquarters) updateData.headquarters = response.headquarters;
-        if (response.funding_raised) updateData.funding_raised = response.funding_raised;
-        if (response.valuation) updateData.valuation = response.valuation;
-        if (response.investor_count) updateData.investor_count = response.investor_count;
-        if (response.employee_count) updateData.employee_count = response.employee_count;
+        
+        // Only update fields that came back from research and weren't already set
+        if (response.website && !existingCompany?.website) updateData.website = response.website;
+        if (response.industry && !existingCompany?.industry) updateData.industry = response.industry;
+        if (response.size && !existingCompany?.size) updateData.size = response.size;
+        if (response.headquarters && !existingCompany?.headquarters) updateData.headquarters = response.headquarters;
+        if (response.funding_raised && !existingCompany?.funding_raised) updateData.funding_raised = response.funding_raised;
+        if (response.valuation && !existingCompany?.valuation) updateData.valuation = response.valuation;
+        if (response.investor_count && !existingCompany?.investor_count) updateData.investor_count = response.investor_count;
+        if (response.employee_count && !existingCompany?.employee_count) updateData.employee_count = response.employee_count;
+        
+        // For decision makers, merge with existing ones instead of replacing
         if (response.decision_makers && response.decision_makers.length > 0) {
-            updateData.decision_makers = response.decision_makers;
+            const existingDMs = existingCompany?.decision_makers || [];
+            const newNames = response.decision_makers.map(dm => dm.name.toLowerCase());
+            const existingNames = existingDMs.map(dm => dm.name.toLowerCase());
+            
+            // Only add decision makers that don't already exist
+            const dmToAdd = response.decision_makers.filter(
+                dm => !existingNames.includes(dm.name.toLowerCase())
+            );
+            
+            if (dmToAdd.length > 0) {
+                updateData.decision_makers = [...existingDMs, ...dmToAdd];
+            }
         }
+        
         updateData.ai_research = JSON.stringify(response);
         updateData.last_financial_update = new Date().toISOString();
 
