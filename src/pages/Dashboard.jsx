@@ -8,6 +8,8 @@ import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar } from 'lucid
 import FundraisingProgress from '../components/dashboard/FundraisingProgress';
 import TasksOverview from '../components/dashboard/TasksOverview';
 import CountdownClock from '../components/dashboard/CountdownClock';
+import MilestoneTracker from '../components/dashboard/MilestoneTracker';
+import ActivityTracker from '../components/dashboard/ActivityTracker';
 import { format } from 'date-fns';
 
 export default function Dashboard() {
@@ -76,6 +78,12 @@ export default function Dashboard() {
                   AI Research
                 </Button>
               </Link>
+              <Link to={createPageUrl('OutreachTracker')}>
+                <Button variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-50">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Outreach Tracker
+                </Button>
+              </Link>
               <Link to={createPageUrl('AdminUsers')}>
                 <Button variant="outline" className="border-slate-300 text-slate-700 hover:bg-slate-50">
                   <Building2 className="w-4 h-4 mr-2" />
@@ -87,11 +95,14 @@ export default function Dashboard() {
         </div>
 
         {/* Main Stats */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <FundraisingProgress companies={companies || []} />
-          <div>
-            <TasksOverview tasks={tasks || []} />
-          </div>
+          <MilestoneTracker companies={companies || []} />
+          <ActivityTracker />
+        </div>
+
+        <div className="grid grid-cols-1 gap-6">
+          <TasksOverview tasks={tasks || []} />
         </div>
 
         {/* Upcoming Tasks & Recent Activity */}
