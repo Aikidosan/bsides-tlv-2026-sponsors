@@ -47,8 +47,27 @@ export default function AIResearch() {
         setConversationId(conv.id);
       }
 
+      // Query knowledge base for relevant context
+      let kbContext = '';
+      try {
+        const { data: ragResults } = await base44.functions.invoke('ragQuery', { 
+          query: messageContent,
+          limit: 5
+        });
+        
+        if (ragResults?.results?.length > 0) {
+          kbContext = '\n\nRelevant knowledge base:\n' + 
+            ragResults.results.map(doc => `- ${doc.title}: ${doc.content.substring(0, 200)}...`).join('\n');
+        }
+      } catch (err) {
+        console.log('KB query skipped:', err);
+      }
+
       const conv = await base44.agents.getConversation(currentConvId);
-      await base44.agents.addMessage(conv, { role: 'user', content: messageContent });
+      await base44.agents.addMessage(conv, { 
+        role: 'user', 
+        content: messageContent + kbContext 
+      });
     } catch (error) {
       console.error('Failed to send message:', error);
     } finally {
