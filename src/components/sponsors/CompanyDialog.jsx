@@ -13,6 +13,7 @@ export default function CompanyDialog({ company, onClose, onSave, isSaving }) {
     website: '',
     industry: '',
     size: 'medium',
+    profile_type: 'private',
     status: 'research',
     contact_name: '',
     contact_title: '',
@@ -86,6 +87,41 @@ export default function CompanyDialog({ company, onClose, onSave, isSaving }) {
           </div>
 
           <div className="space-y-2">
+            <Label htmlFor="profile_type">Profile Type</Label>
+            <Select value={formData.profile_type} onValueChange={(v) => handleChange('profile_type', v)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="public">
+                  <span className="flex items-center gap-2">
+                    <Globe className="w-3 h-3" />
+                    Public
+                  </span>
+                </SelectItem>
+                <SelectItem value="private">
+                  <span className="flex items-center gap-2">
+                    <Lock className="w-3 h-3" />
+                    Private
+                  </span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {formData.profile_type === 'public' && (
+            <div className="space-y-2">
+              <Label htmlFor="stock_symbol">Stock Ticker *</Label>
+              <Input
+                id="stock_symbol"
+                value={formData.stock_symbol}
+                onChange={(e) => handleChange('stock_symbol', e.target.value.toUpperCase())}
+                placeholder="PANW, CHKP"
+              />
+            </div>
+          )}
+
+          <div className="space-y-2">
             <Label htmlFor="status">Status</Label>
             <Select value={formData.status} onValueChange={(v) => handleChange('status', v)}>
               <SelectTrigger>
@@ -110,16 +146,6 @@ export default function CompanyDialog({ company, onClose, onSave, isSaving }) {
               type="date"
               value={formData.next_followup_date}
               onChange={(e) => handleChange('next_followup_date', e.target.value)}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="stock_symbol">Stock Symbol</Label>
-            <Input
-              id="stock_symbol"
-              value={formData.stock_symbol}
-              onChange={(e) => handleChange('stock_symbol', e.target.value.toUpperCase())}
-              placeholder="PANW, CHKP, etc."
             />
           </div>
         </div>
