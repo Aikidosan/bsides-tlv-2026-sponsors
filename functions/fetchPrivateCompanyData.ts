@@ -20,9 +20,9 @@ Deno.serve(async (req) => {
         const companyData = company[0].data;
         const companyName = companyData.name;
 
-        // Use AI with web search to fetch financial data
+        // Use AI with web search to fetch financial data from Growjo and other sources
         const response = await base44.integrations.Core.InvokeLLM({
-            prompt: `Search for financial data on Crunchbase and other sources for the company: ${companyName}. 
+            prompt: `Search Growjo and other sources for financial data on the company: ${companyName}. 
             
             Find and return the following information in JSON format:
             - funding_raised: Total funding raised (in USD)
@@ -34,7 +34,7 @@ Deno.serve(async (req) => {
             - headquarters: Company headquarters location
             - founded_year: Year founded
             
-            If information is not available, use null for that field.`,
+            Prioritize Growjo data if available. If information is not available, use null for that field.`,
             add_context_from_internet: true,
             response_json_schema: {
                 type: "object",
