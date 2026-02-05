@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Calendar, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 export default function TasksOverview({ tasks }) {
   const EVENT_DATE = new Date('2026-06-01');
@@ -39,20 +41,24 @@ export default function TasksOverview({ tasks }) {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-            <div className="flex items-center gap-2 mb-1">
-              <Clock className="w-4 h-4 text-blue-600" />
-              <span className="text-xs text-blue-700">In Progress</span>
+          <Link to={createPageUrl('Tasks') + '?status=in_progress'}>
+            <div className="bg-blue-50 rounded-lg p-3 border border-blue-200 cursor-pointer hover:bg-blue-100 transition-colors">
+              <div className="flex items-center gap-2 mb-1">
+                <Clock className="w-4 h-4 text-blue-600" />
+                <span className="text-xs text-blue-700">In Progress</span>
+              </div>
+              <p className="text-2xl font-bold text-blue-900">{inProgress}</p>
             </div>
-            <p className="text-2xl font-bold text-blue-900">{inProgress}</p>
-          </div>
+          </Link>
           
-          <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs text-gray-600">To Do</span>
+          <Link to={createPageUrl('Tasks') + '?status=todo'}>
+            <div className="bg-gray-50 rounded-lg p-3 border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs text-gray-600">To Do</span>
+              </div>
+              <p className="text-2xl font-bold text-gray-900">{todo}</p>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{todo}</p>
-          </div>
+          </Link>
         </div>
 
         {overdue > 0 && (
