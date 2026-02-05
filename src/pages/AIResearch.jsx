@@ -28,19 +28,27 @@ export default function AIResearch() {
   const sendMessage = async () => {
     if (!input.trim()) return;
     
-    if (!conversationId) {
-      await startConversation();
-      return;
-    }
-
-    setIsLoading(true);
-    const userMsg = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMsg]);
+    const messageContent = input;
     setInput('');
+    setIsLoading(true);
 
     try {
-      const conv = await base44.agents.getConversation(conversationId);
-      await base44.agents.addMessage(conv, { role: 'user', content: input });
+      let currentConvId = conversationId;
+      
+      if (!currentConvId) {
+        const conv = await base44.agents.createConversation({
+          agent_name: 'sponsor_researcher',
+          metadata: {
+            name: 'Sponsor Research Session',
+            description: 'AI-assisted research for BSides TLV sponsors'
+          }
+        });
+        currentConvId = conv.id;
+        setConversationId(conv.id);
+      }
+
+      const conv = await base44.agents.getConversation(currentConvId);
+      await base44.agents.addMessage(conv, { role: 'user', content: messageContent });
     } catch (error) {
       console.error('Failed to send message:', error);
     } finally {
