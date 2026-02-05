@@ -77,20 +77,6 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
     }
   };
 
-  const handleLinkedInResearch = async (e) => {
-    e.stopPropagation();
-    setIsResearching(true);
-    try {
-      await base44.functions.invoke('linkedinResearch', { company_id: company.id });
-      window.location.reload();
-    } catch (error) {
-      console.error('LinkedIn research failed:', error);
-      alert('Failed to research decision makers. Please try again.');
-    } finally {
-      setIsResearching(false);
-    }
-  };
-
   const handleAutoResearch = async (e) => {
     e.stopPropagation();
     setIsAutoResearching(true);
