@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Company not found' }, { status: 404 });
         }
 
-        const companyData = company[0].data;
+        const companyData = company[0];
         const companyName = companyData.name;
 
         // Use AI with web search to fetch financial data from Growjo and other sources
@@ -59,9 +59,8 @@ Deno.serve(async (req) => {
 
         // Update company with fetched data
         await base44.entities.Company.update(company_id, {
-            ...companyData,
             ai_research: JSON.stringify(response),
-            profile_type: "private"
+            last_financial_update: new Date().toISOString()
         });
 
         return Response.json({ success: true, data: response });
