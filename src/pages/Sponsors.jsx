@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,15 @@ export default function Sponsors() {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const queryClient = useQueryClient();
+
+  // Handle URL parameters for status filter
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const statusParam = urlParams.get('status');
+    if (statusParam) {
+      setFilterStatus(statusParam);
+    }
+  }, []);
 
   const { data: companies, isLoading } = useQuery({
     queryKey: ['companies'],
@@ -43,7 +52,11 @@ export default function Sponsors() {
     const matchesSearch = !searchTerm || 
       c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.contact_name?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === 'all' || c.status === filterStatus;
+    
+    // Handle multiple statuses (e.g., "contacted,responded")
+    const statusList = filterStatus.split(',');
+    const matchesStatus = filterStatus === 'all' || statusList.includes(c.status);
+    
     return matchesSearch && matchesStatus;
   }) || [];
 
