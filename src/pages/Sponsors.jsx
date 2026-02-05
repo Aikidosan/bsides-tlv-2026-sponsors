@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, ArrowLeft } from 'lucide-react';
+import { Plus, Search, ArrowLeft, Linkedin, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import CompanyCard from '../components/sponsors/CompanyCard';
@@ -14,6 +14,7 @@ export default function Sponsors() {
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [isBulkResearching, setIsBulkResearching] = useState(false);
   const queryClient = useQueryClient();
 
   // Handle URL parameters for status filter
@@ -68,6 +69,19 @@ export default function Sponsors() {
     }
   };
 
+  const handleBulkLinkedInResearch = async () => {
+    setIsBulkResearching(true);
+    try {
+      const response = await base44.functions.invoke('bulkLinkedinResearch', {});
+      alert(`Research complete! Processed ${response.data.processed} companies, ${response.data.failed} failed.`);
+      queryClient.invalidateQueries(['companies']);
+    } catch (error) {
+      alert('Bulk research failed: ' + error.message);
+    } finally {
+      setIsBulkResearching(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
       <div className="max-w-7xl mx-auto p-6 space-y-6">
@@ -84,16 +98,36 @@ export default function Sponsors() {
               <p className="text-gray-600">Track outreach to Israeli cybersecurity companies</p>
             </div>
           </div>
-          <Button 
-            onClick={() => {
-              setSelectedCompany(null);
-              setShowDialog(true);
-            }}
-            className="bg-indigo-600 hover:bg-indigo-700"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add Company
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={handleBulkLinkedInResearch}
+              variant="outline"
+              className="border-blue-300 text-blue-700 hover:bg-blue-50"
+              disabled={isBulkResearching}
+            >
+              {isBulkResearching ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Researching...
+                </>
+              ) : (
+                <>
+                  <Linkedin className="w-4 h-4 mr-2" />
+                  Find All Decision Makers
+                </>
+              )}
+            </Button>
+            <Button 
+              onClick={() => {
+                setSelectedCompany(null);
+                setShowDialog(true);
+              }}
+              className="bg-indigo-600 hover:bg-indigo-700"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Company
+            </Button>
+          </div>
         </div>
 
         {/* Filters */}
