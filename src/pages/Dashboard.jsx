@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar } from 'lucide-react';
+import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar, CalendarDays } from 'lucide-react';
 import FundraisingProgress from '../components/dashboard/FundraisingProgress';
 import TasksOverview from '../components/dashboard/TasksOverview';
 import CountdownClock from '../components/dashboard/CountdownClock';
@@ -82,6 +82,12 @@ export default function Dashboard() {
                 <Button variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-50">
                   <Calendar className="w-4 h-4 mr-2" />
                   Outreach Tracker
+                </Button>
+              </Link>
+              <Link to={createPageUrl('TeamCalendar')}>
+                <Button variant="outline" className="border-purple-300 text-purple-700 hover:bg-purple-50">
+                  <CalendarDays className="w-4 h-4 mr-2" />
+                  Team Calendar
                 </Button>
               </Link>
               <Link to={createPageUrl('AdminUsers')}>
