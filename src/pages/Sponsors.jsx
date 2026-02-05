@@ -15,6 +15,7 @@ export default function Sponsors() {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [isBulkResearching, setIsBulkResearching] = useState(false);
+  const [isBulkFetchingFinancials, setIsBulkFetchingFinancials] = useState(false);
   const [sortBy, setSortBy] = useState('updated');
   const [viewMode, setViewMode] = useState('grid');
   const queryClient = useQueryClient();
@@ -109,6 +110,42 @@ export default function Sponsors() {
     }
   };
 
+  const handleBulkFetchFinancials = async () => {
+    const companiesWithSymbols = companies?.filter(c => c.stock_symbol) || [];
+    if (companiesWithSymbols.length === 0) {
+      alert('No companies have stock symbols set. Add stock symbols first.');
+      return;
+    }
+    
+    setIsBulkFetchingFinancials(true);
+    let processed = 0;
+    let failed = 0;
+
+    try {
+      for (const company of companiesWithSymbols) {
+        try {
+          await base44.functions.invoke('fetchFinancialData', { 
+            company_id: company.id, 
+            stock_symbol: company.stock_symbol 
+          });
+          processed++;
+        } catch (err) {
+          console.error(`Failed for ${company.name}:`, err);
+          failed++;
+        }
+        // Small delay to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+      
+      alert(`Financial data fetch complete! Processed ${processed} companies, ${failed} failed.`);
+      queryClient.invalidateQueries(['companies']);
+    } catch (error) {
+      alert('Bulk financial fetch failed: ' + error.message);
+    } finally {
+      setIsBulkFetchingFinancials(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
       <div className="max-w-7xl mx-auto p-6 space-y-6">
@@ -146,6 +183,24 @@ export default function Sponsors() {
                 <>
                   <Linkedin className="w-4 h-4 mr-2" />
                   Find All Decision Makers
+                </>
+              )}
+            </Button>
+            <Button 
+              onClick={handleBulkFetchFinancials}
+              variant="outline"
+              className="border-green-300 text-green-700 hover:bg-green-50"
+              disabled={isBulkFetchingFinancials}
+            >
+              {isBulkFetchingFinancials ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Fetching...
+                </>
+              ) : (
+                <>
+                  <ArrowUpDown className="w-4 h-4 mr-2" />
+                  Fetch All Financial Data
                 </>
               )}
             </Button>

@@ -23,6 +23,7 @@ export default function CompanyDialog({ company, onClose, onSave, isSaving }) {
     sponsorship_tier: '',
     notes: '',
     next_followup_date: '',
+    stock_symbol: '',
     ...company
   });
 
@@ -109,6 +110,16 @@ export default function CompanyDialog({ company, onClose, onSave, isSaving }) {
               type="date"
               value={formData.next_followup_date}
               onChange={(e) => handleChange('next_followup_date', e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="stock_symbol">Stock Symbol</Label>
+            <Input
+              id="stock_symbol"
+              value={formData.stock_symbol}
+              onChange={(e) => handleChange('stock_symbol', e.target.value.toUpperCase())}
+              placeholder="PANW, CHKP, etc."
             />
           </div>
         </div>

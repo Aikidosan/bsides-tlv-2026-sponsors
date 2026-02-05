@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Building2, Mail, Phone, Linkedin, ExternalLink, Calendar, Sparkles, Loader2, Users } from "lucide-react";
+import { Building2, Mail, Phone, Linkedin, ExternalLink, Calendar, Sparkles, Loader2, Users, TrendingUp, DollarSign } from "lucide-react";
 import { format } from "date-fns";
 import { base44 } from '@/api/base44Client';
 
@@ -26,6 +26,7 @@ const tierColors = {
 
 export default function CompanyCard({ company, onClick, onAIResearch }) {
   const [isResearching, setIsResearching] = useState(false);
+  const [isFetchingFinancials, setIsFetchingFinancials] = useState(false);
 
   const handleLinkedInResearch = async (e) => {
     e.stopPropagation();
@@ -42,6 +43,27 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
     }
   };
 
+  const handleFetchFinancials = async (e) => {
+    e.stopPropagation();
+    if (!company.stock_symbol) {
+      alert('Please add a stock symbol for this company first.');
+      return;
+    }
+    setIsFetchingFinancials(true);
+    try {
+      await base44.functions.invoke('fetchFinancialData', { 
+        company_id: company.id, 
+        stock_symbol: company.stock_symbol 
+      });
+      window.location.reload();
+    } catch (error) {
+      console.error('Financial fetch failed:', error);
+      alert('Failed to fetch financial data: ' + error.message);
+    } finally {
+      setIsFetchingFinancials(false);
+    }
+  };
+
   return (
     <Card 
       className="hover:shadow-lg transition-all cursor-pointer border-l-4 border-l-indigo-500"
@@ -53,6 +75,11 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
             <div className="flex items-center gap-2 mb-2">
               <Building2 className="w-5 h-5 text-indigo-600" />
               <h3 className="font-bold text-lg">{company.name}</h3>
+              {company.stock_symbol && (
+                <Badge variant="outline" className="text-xs">
+                  {company.stock_symbol}
+                </Badge>
+              )}
             </div>
             <div className="flex flex-wrap gap-2">
               <Badge className={statusColors[company.status] + " border"}>
@@ -66,13 +93,29 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
             </div>
           </div>
           
-          {company.sponsorship_amount > 0 && (
-            <div className="text-right">
+          <div className="text-right space-y-1">
+            {company.sponsorship_amount > 0 && (
               <p className="text-2xl font-bold text-green-600">
                 ${company.sponsorship_amount.toLocaleString()}
               </p>
-            </div>
-          )}
+            )}
+            {company.market_cap && (
+              <div className="text-xs text-gray-600">
+                <div className="flex items-center gap-1">
+                  <TrendingUp className="w-3 h-3" />
+                  Cap: ${(company.market_cap / 1000000000).toFixed(2)}B
+                </div>
+              </div>
+            )}
+            {company.stock_price && (
+              <div className="text-xs text-gray-600">
+                <div className="flex items-center gap-1">
+                  <DollarSign className="w-3 h-3" />
+                  ${company.stock_price.toFixed(2)}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </CardHeader>
       
@@ -190,6 +233,28 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
           >
             <Sparkles className="w-4 h-4 mr-2" />
             Get AI Research
+          </Button>
+        )}
+
+        {company.stock_symbol && !company.market_cap && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-full mt-2 border-green-300 text-green-700 hover:bg-green-50"
+            onClick={handleFetchFinancials}
+            disabled={isFetchingFinancials}
+          >
+            {isFetchingFinancials ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Fetching...
+              </>
+            ) : (
+              <>
+                <TrendingUp className="w-4 h-4 mr-2" />
+                Get Financial Data
+              </>
+            )}
           </Button>
         )}
       </CardContent>
