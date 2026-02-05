@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, ArrowLeft, Linkedin, Loader2 } from 'lucide-react';
+import { Plus, Search, ArrowLeft, Linkedin, Loader2, ArrowUpDown, Map } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import CompanyCard from '../components/sponsors/CompanyCard';
@@ -15,6 +15,8 @@ export default function Sponsors() {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [isBulkResearching, setIsBulkResearching] = useState(false);
+  const [sortBy, setSortBy] = useState('updated');
+  const [viewMode, setViewMode] = useState('grid');
   const queryClient = useQueryClient();
 
   // Handle URL parameters for status filter
@@ -49,7 +51,7 @@ export default function Sponsors() {
     },
   });
 
-  const filteredCompanies = companies?.filter(c => {
+  const filteredAndSortedCompanies = companies?.filter(c => {
     const matchesSearch = !searchTerm || 
       c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       c.contact_name?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -59,6 +61,22 @@ export default function Sponsors() {
     const matchesStatus = filterStatus === 'all' || statusList.includes(c.status);
     
     return matchesSearch && matchesStatus;
+  }).sort((a, b) => {
+    switch (sortBy) {
+      case 'size':
+        const sizeOrder = { enterprise: 5, large: 4, medium: 3, small: 2, startup: 1 };
+        return (sizeOrder[b.size] || 0) - (sizeOrder[a.size] || 0);
+      case 'trending':
+        return new Date(b.updated_date) - new Date(a.updated_date);
+      case 'alphabet':
+        return a.name.localeCompare(b.name);
+      case 'ai':
+        const aIsAI = a.industry?.toLowerCase().includes('ai') || a.name.toLowerCase().includes('ai');
+        const bIsAI = b.industry?.toLowerCase().includes('ai') || b.name.toLowerCase().includes('ai');
+        return (bIsAI ? 1 : 0) - (aIsAI ? 1 : 0);
+      default:
+        return new Date(b.updated_date) - new Date(a.updated_date);
+    }
   }) || [];
 
   const handleSave = (data) => {
@@ -97,7 +115,7 @@ export default function Sponsors() {
               <div className="flex items-center gap-3">
                 <h1 className="text-3xl font-bold">Sponsor Pipeline</h1>
                 <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-semibold">
-                  {filteredCompanies.length} {filteredCompanies.length === 1 ? 'company' : 'companies'}
+                  {filteredAndSortedCompanies.length} {filteredAndSortedCompanies.length === 1 ? 'company' : 'companies'}
                 </span>
               </div>
               <p className="text-gray-600">Track outreach to Israeli cybersecurity companies</p>
@@ -136,7 +154,7 @@ export default function Sponsors() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-200">
+        <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-200 space-y-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
@@ -163,26 +181,79 @@ export default function Sponsors() {
               ))}
             </div>
           </div>
+          
+          {/* Sort and View Controls */}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="w-4 h-4 text-gray-500" />
+              <span className="text-sm text-gray-600">Sort by:</span>
+              <div className="flex gap-2">
+                {[
+                  { value: 'size', label: 'Biggest First' },
+                  { value: 'trending', label: 'Trending' },
+                  { value: 'alphabet', label: 'A-Z' },
+                  { value: 'ai', label: 'AI Leaders' }
+                ].map(option => (
+                  <Button
+                    key={option.value}
+                    variant={sortBy === option.value ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setSortBy(option.value)}
+                    className="whitespace-nowrap"
+                  >
+                    {option.label}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+              >
+                Grid
+              </Button>
+              <Button
+                variant={viewMode === 'map' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('map')}
+              >
+                <Map className="w-4 h-4 mr-2" />
+                Map
+              </Button>
+            </div>
+          </div>
         </div>
 
-        {/* Companies Grid */}
+        {/* Companies View */}
         {isLoading ? (
           <div className="text-center py-12">
             <p className="text-gray-500">Loading...</p>
           </div>
-        ) : filteredCompanies.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredCompanies.map(company => (
-              <CompanyCard
-                key={company.id}
-                company={company}
-                onClick={() => {
-                  setSelectedCompany(company);
-                  setShowDialog(true);
-                }}
-              />
-            ))}
-          </div>
+        ) : filteredAndSortedCompanies.length > 0 ? (
+          viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredAndSortedCompanies.map(company => (
+                <CompanyCard
+                  key={company.id}
+                  company={company}
+                  onClick={() => {
+                    setSelectedCompany(company);
+                    setShowDialog(true);
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+              <div className="text-center py-12">
+                <Map className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                <p className="text-lg font-medium text-gray-900 mb-2">Map View Coming Soon</p>
+                <p className="text-gray-500">Visualize sponsor locations across Israel</p>
+              </div>
+            </div>
+          )
         ) : (
           <div className="text-center py-12 bg-white rounded-xl border border-gray-200">
             <p className="text-gray-500">No companies found. Add your first prospect!</p>
