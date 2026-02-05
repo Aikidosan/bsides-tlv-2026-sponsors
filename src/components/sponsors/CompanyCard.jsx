@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Building2, Mail, Phone, Linkedin, ExternalLink, Calendar, Sparkles, Loader2, Users, TrendingUp, DollarSign } from "lucide-react";
+import { Building2, Mail, Phone, Linkedin, ExternalLink, Calendar, Sparkles, Loader2, Users, TrendingUp, DollarSign, UserPlus } from "lucide-react";
 import { format } from "date-fns";
 import { base44 } from '@/api/base44Client';
+import AddContactDialog from './AddContactDialog';
+import { useQueryClient } from '@tanstack/react-query';
 
 const statusColors = {
   research: "bg-gray-100 text-gray-800 border-gray-300",
@@ -27,6 +29,9 @@ const tierColors = {
 export default function CompanyCard({ company, onClick, onAIResearch }) {
   const [isResearching, setIsResearching] = useState(false);
   const [isFetchingFinancials, setIsFetchingFinancials] = useState(false);
+  const [showAddContact, setShowAddContact] = useState(false);
+  const [isSavingContact, setIsSavingContact] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleLinkedInResearch = async (e) => {
     e.stopPropagation();
@@ -61,6 +66,20 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
       alert('Failed to fetch financial data: ' + error.message);
     } finally {
       setIsFetchingFinancials(false);
+    }
+  };
+
+  const handleSaveContact = async (data) => {
+    setIsSavingContact(true);
+    try {
+      await base44.entities.Company.update(company.id, data);
+      queryClient.invalidateQueries(['companies']);
+      setShowAddContact(false);
+    } catch (error) {
+      console.error('Failed to save contact:', error);
+      alert('Failed to save contact: ' + error.message);
+    } finally {
+      setIsSavingContact(false);
     }
   };
 
@@ -174,9 +193,23 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
 
         {company.decision_makers && company.decision_makers.length > 0 && (
           <div className="space-y-2 mt-3 pt-3 border-t border-gray-200">
-            <div className="flex items-center gap-1 text-xs font-semibold text-gray-700">
-              <Users className="w-3 h-3" />
-              <span>Decision Makers</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1 text-xs font-semibold text-gray-700">
+                <Users className="w-3 h-3" />
+                <span>Decision Makers</span>
+              </div>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-6 px-2 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowAddContact(true);
+                }}
+              >
+                <UserPlus className="w-3 h-3 mr-1" />
+                Add
+              </Button>
             </div>
             {company.decision_makers.map((dm, idx) => (
               <div key={idx} className="text-xs space-y-0.5">
@@ -258,6 +291,15 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
           </Button>
         )}
       </CardContent>
+
+      {showAddContact && (
+        <AddContactDialog
+          company={company}
+          onClose={() => setShowAddContact(false)}
+          onSave={handleSaveContact}
+          isSaving={isSavingContact}
+        />
+      )}
     </Card>
   );
 }
