@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
-import { Calendar, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Calendar, Clock, X } from 'lucide-react';
 
 export default function CountdownClock() {
   const EVENT_DATE = new Date('2026-06-01T09:00:00');
   const [timeLeft, setTimeLeft] = useState({});
+  const [isVisible, setIsVisible] = useState(() => {
+    const saved = localStorage.getItem('countdownClockVisible');
+    return saved === null ? true : saved === 'true';
+  });
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -28,10 +33,25 @@ export default function CountdownClock() {
     return () => clearInterval(timer);
   }, []);
 
+  const handleHide = () => {
+    setIsVisible(false);
+    localStorage.setItem('countdownClockVisible', 'false');
+  };
+
+  if (!isVisible) return null;
+
   return (
     <Card className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white overflow-hidden">
       <div className="p-8 text-center relative">
         <div className="absolute inset-0 bg-black/10"></div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleHide}
+          className="absolute top-4 right-4 z-20 text-white hover:bg-white/20"
+        >
+          <X className="w-5 h-5" />
+        </Button>
         <div className="relative z-10">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Calendar className="w-6 h-6" />
