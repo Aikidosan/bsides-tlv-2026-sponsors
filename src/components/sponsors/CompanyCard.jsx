@@ -50,16 +50,23 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
 
   const handleFetchFinancials = async (e) => {
     e.stopPropagation();
-    if (!company.stock_symbol) {
-      alert('Please add a stock symbol for this company first.');
-      return;
-    }
     setIsFetchingFinancials(true);
     try {
-      await base44.functions.invoke('fetchFinancialData', { 
-        company_id: company.id, 
-        stock_symbol: company.stock_symbol 
-      });
+      if (company.profile_type === 'public' && company.stock_symbol) {
+        // Fetch public company data
+        await base44.functions.invoke('fetchFinancialData', { 
+          company_id: company.id, 
+          stock_symbol: company.stock_symbol 
+        });
+      } else if (company.profile_type === 'private') {
+        // Fetch private company data from Crunchbase
+        await base44.functions.invoke('fetchPrivateCompanyData', { 
+          company_id: company.id
+        });
+      } else {
+        alert('Please set company type (public/private) first.');
+        return;
+      }
       window.location.reload();
     } catch (error) {
       console.error('Financial fetch failed:', error);
@@ -338,7 +345,8 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
           </Button>
         )}
 
-        {company.profile_type === 'public' && company.stock_symbol && !company.market_cap && (
+        {((company.profile_type === 'public' && company.stock_symbol && !company.market_cap) || 
+          (company.profile_type === 'private' && !company.ai_research)) && (
           <Button
             size="sm"
             variant="outline"
