@@ -53,6 +53,7 @@ import Dashboard from './pages/Dashboard';
 import Messages from './pages/Messages';
 import Sponsors from './pages/Sponsors';
 import Tasks from './pages/Tasks';
+import AdminUsers from './pages/AdminUsers';
 
 
 export const PAGES = {
@@ -62,6 +63,7 @@ export const PAGES = {
     "Messages": Messages,
     "Sponsors": Sponsors,
     "Tasks": Tasks,
+    "AdminUsers": AdminUsers,
 }
 
 export const pagesConfig = {

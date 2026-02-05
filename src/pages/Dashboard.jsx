@@ -76,6 +76,12 @@ export default function Dashboard() {
                   AI Research
                 </Button>
               </Link>
+              <Link to={createPageUrl('AdminUsers')}>
+                <Button variant="outline" className="border-slate-300 text-slate-700 hover:bg-slate-50">
+                  <Building2 className="w-4 h-4 mr-2" />
+                  Admin
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
