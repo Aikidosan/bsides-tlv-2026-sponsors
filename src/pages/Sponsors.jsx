@@ -162,6 +162,34 @@ export default function Sponsors() {
     }
   };
 
+  const handleBulkDecisionMakers = async () => {
+    setIsBulkDecisionMakers(true);
+    let processed = 0;
+    let failed = 0;
+    
+    try {
+      for (const company of companies || []) {
+        try {
+          await base44.functions.invoke('linkedinResearch', { 
+            company_id: company.id
+          });
+          processed++;
+        } catch (err) {
+          console.error(`Failed for ${company.name}:`, err);
+          failed++;
+        }
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
+      
+      alert(`Decision makers research complete! Processed ${processed} companies, ${failed} failed.`);
+      queryClient.invalidateQueries(['companies']);
+    } catch (error) {
+      alert('Bulk decision makers research failed: ' + error.message);
+    } finally {
+      setIsBulkDecisionMakers(false);
+    }
+  };
+
   const handleBulkImportIsraeli = async () => {
     if (!window.confirm('This will import 75+ Israeli cybersecurity companies. Continue?')) {
       return;
