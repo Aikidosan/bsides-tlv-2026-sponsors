@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,17 @@ import TaskDialog from '../components/tasks/TaskDialog';
 export default function Tasks() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
+  const [statusFilter, setStatusFilter] = useState(null);
   const queryClient = useQueryClient();
+
+  // Handle URL parameters for status filter
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const statusParam = urlParams.get('status');
+    if (statusParam) {
+      setStatusFilter(statusParam);
+    }
+  }, []);
 
   const { data: tasks, isLoading } = useQuery({
     queryKey: ['tasks'],
@@ -89,6 +99,7 @@ export default function Tasks() {
               setShowDialog(true);
             }}
             onStatusChange={handleStatusChange}
+            highlightStatus={statusFilter}
           />
         )}
 
