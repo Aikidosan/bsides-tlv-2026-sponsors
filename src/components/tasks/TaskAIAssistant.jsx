@@ -107,11 +107,13 @@ export default function TaskAIAssistant({ task, onClose }) {
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
             placeholder="Ask for help or guidance..."
             disabled={isLoading}
+            className="flex-1"
           />
           <Button 
             onClick={handleSend} 
             disabled={isLoading || !input.trim()}
-            className="bg-purple-600 hover:bg-purple-700"
+            className="bg-purple-600 hover:bg-purple-700 shrink-0"
+            size="icon"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
