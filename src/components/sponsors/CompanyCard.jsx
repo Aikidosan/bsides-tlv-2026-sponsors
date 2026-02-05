@@ -146,26 +146,44 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
             </div>
           </div>
           
-          <div className="text-right space-y-1">
+          <div className="text-right space-y-2">
             {company.sponsorship_amount > 0 && (
               <p className="text-2xl font-bold text-green-600">
                 ${company.sponsorship_amount.toLocaleString()}
               </p>
             )}
-            {company.market_cap && (
-              <div className="text-xs text-gray-600">
-                <div className="flex items-center gap-1">
-                  <TrendingUp className="w-3 h-3" />
-                  Cap: ${(company.market_cap / 1000000000).toFixed(2)}B
-                </div>
-              </div>
-            )}
-            {company.stock_price && (
-              <div className="text-xs text-gray-600">
-                <div className="flex items-center gap-1">
-                  <DollarSign className="w-3 h-3" />
-                  ${company.stock_price.toFixed(2)}
-                </div>
+            {(company.market_cap || company.stock_price || company.analyst_rating || company.valuation || company.funding_raised) && (
+              <div className="bg-gray-50 rounded-lg p-2 space-y-1">
+                {company.market_cap && (
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600">Market Cap:</span>
+                    <span className="font-semibold text-gray-900">${(company.market_cap / 1000000000).toFixed(2)}B</span>
+                  </div>
+                )}
+                {company.stock_price && (
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600">Stock Price:</span>
+                    <span className="font-semibold text-gray-900">${company.stock_price.toFixed(2)}</span>
+                  </div>
+                )}
+                {company.analyst_rating && (
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600">Rating:</span>
+                    <Badge className="text-xs bg-blue-100 text-blue-800">{company.analyst_rating}</Badge>
+                  </div>
+                )}
+                {company.valuation && (
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600">Valuation:</span>
+                    <span className="font-semibold text-gray-900">${(company.valuation / 1000000).toFixed(0)}M</span>
+                  </div>
+                )}
+                {company.funding_raised && (
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-600">Funding:</span>
+                    <span className="font-semibold text-gray-900">${(company.funding_raised / 1000000).toFixed(1)}M</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
