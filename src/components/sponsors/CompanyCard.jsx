@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Building2, Mail, Phone, Linkedin, ExternalLink, Calendar, Sparkles } from "lucide-react";
+import { Building2, Mail, Phone, Linkedin, ExternalLink, Calendar, Sparkles, Loader2, Users } from "lucide-react";
 import { format } from "date-fns";
+import { base44 } from '@/api/base44Client';
 
 const statusColors = {
   research: "bg-gray-100 text-gray-800 border-gray-300",
@@ -24,6 +25,23 @@ const tierColors = {
 };
 
 export default function CompanyCard({ company, onClick, onAIResearch }) {
+  const [isResearching, setIsResearching] = useState(false);
+
+  const handleLinkedInResearch = async (e) => {
+    e.stopPropagation();
+    setIsResearching(true);
+    try {
+      await base44.functions.invoke('linkedinResearch', { company_id: company.id });
+      // Refresh the page to show updated data
+      window.location.reload();
+    } catch (error) {
+      console.error('LinkedIn research failed:', error);
+      alert('Failed to research decision makers. Please try again.');
+    } finally {
+      setIsResearching(false);
+    }
+  };
+
   return (
     <Card 
       className="hover:shadow-lg transition-all cursor-pointer border-l-4 border-l-indigo-500"
@@ -110,6 +128,55 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
             <span>Follow-up: {format(new Date(company.next_followup_date), 'MMM d, yyyy')}</span>
           </div>
         )}
+
+        {company.decision_makers && company.decision_makers.length > 0 && (
+          <div className="space-y-2 mt-3 pt-3 border-t border-gray-200">
+            <div className="flex items-center gap-1 text-xs font-semibold text-gray-700">
+              <Users className="w-3 h-3" />
+              <span>Decision Makers</span>
+            </div>
+            {company.decision_makers.map((dm, idx) => (
+              <div key={idx} className="text-xs space-y-0.5">
+                <p className="font-medium text-gray-900">{dm.name}</p>
+                <p className="text-gray-600">{dm.title}</p>
+                {dm.linkedin_url && (
+                  <a
+                    href={dm.linkedin_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Linkedin className="w-3 h-3" />
+                    <span>View Profile</span>
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {!company.decision_makers || company.decision_makers.length === 0 ? (
+          <Button
+            size="sm"
+            variant="outline"
+            className="w-full mt-2 border-blue-300 text-blue-700 hover:bg-blue-50"
+            onClick={handleLinkedInResearch}
+            disabled={isResearching}
+          >
+            {isResearching ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Researching...
+              </>
+            ) : (
+              <>
+                <Linkedin className="w-4 h-4 mr-2" />
+                Find Decision Makers
+              </>
+            )}
+          </Button>
+        ) : null}
 
         {!company.ai_research && onAIResearch && (
           <Button
