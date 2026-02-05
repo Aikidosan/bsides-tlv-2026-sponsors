@@ -227,6 +227,24 @@ export default function Sponsors() {
           </div>
           <div className="flex gap-2">
             <Button 
+              onClick={handleBulkDecisionMakers}
+              variant="outline"
+              className="border-blue-300 text-blue-700 hover:bg-blue-50"
+              disabled={isBulkDecisionMakers}
+            >
+              {isBulkDecisionMakers ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Researching...
+                </>
+              ) : (
+                <>
+                  <Linkedin className="w-4 h-4 mr-2" />
+                  Decision Makers All
+                </>
+              )}
+            </Button>
+            <Button 
               onClick={handleBulkAutoResearch}
               variant="outline"
               className="border-indigo-300 text-indigo-700 hover:bg-indigo-50"
