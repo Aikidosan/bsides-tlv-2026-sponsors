@@ -129,6 +129,42 @@ Deno.serve(async (req) => {
         // Update company if company_id provided
         if (company_id) {
             await base44.entities.Company.update(company_id, updateData);
+            
+            // Save company research to knowledge base
+            const kbContent = `
+Company: ${name}
+Industry: ${response.industry || 'N/A'}
+Size: ${response.size || 'N/A'}
+Founded: ${response.founded_year || 'N/A'}
+Headquarters: ${response.headquarters || 'N/A'}
+Funding Raised: ${response.funding_raised ? '$' + response.funding_raised.toLocaleString() : 'N/A'}
+Valuation: ${response.valuation ? '$' + response.valuation.toLocaleString() : 'N/A'}
+Employees: ${response.employee_count || 'N/A'}
+Website: ${response.website || 'N/A'}
+
+Key Decision Makers:
+${response.decision_makers?.map(dm => `- ${dm.name} (${dm.title})`).join('\n') || 'N/A'}
+            `.trim();
+
+            const tags = [
+                'cybersecurity',
+                'israel',
+                response.size,
+                response.industry?.toLowerCase().replace(/\s+/g, '-')
+            ].filter(Boolean);
+
+            try {
+                await base44.functions.invoke('saveToKnowledgeBase', {
+                    title: `${name} - Company Research`,
+                    content: kbContent,
+                    document_type: 'company_research',
+                    company_id: company_id,
+                    tags: tags,
+                    source: 'auto_research'
+                });
+            } catch (err) {
+                console.log('KB save skipped:', err.message);
+            }
         }
 
         return Response.json({ 
