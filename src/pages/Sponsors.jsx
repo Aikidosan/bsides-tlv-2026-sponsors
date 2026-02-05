@@ -94,7 +94,12 @@ export default function Sponsors() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-3xl font-bold">Sponsor Pipeline</h1>
+              <div className="flex items-center gap-3">
+                <h1 className="text-3xl font-bold">Sponsor Pipeline</h1>
+                <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-semibold">
+                  {filteredCompanies.length} {filteredCompanies.length === 1 ? 'company' : 'companies'}
+                </span>
+              </div>
               <p className="text-gray-600">Track outreach to Israeli cybersecurity companies</p>
             </div>
           </div>
