@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Sparkles, Loader2 } from 'lucide-react';
+import { Send, Sparkles, Loader2, Maximize2, Minimize2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 export default function TaskAIAssistant({ task, onClose }) {
@@ -11,6 +11,7 @@ export default function TaskAIAssistant({ task, onClose }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -65,13 +66,29 @@ export default function TaskAIAssistant({ task, onClose }) {
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl h-[600px] flex flex-col">
+      <DialogContent className={`${isFullScreen ? 'max-w-6xl h-[90vh]' : 'max-w-2xl h-[600px]'} flex flex-col`}>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-purple-600" />
-            AI Task Assistant
-          </DialogTitle>
-          <p className="text-sm text-gray-600">Getting help with: {task.title}</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-purple-600" />
+                AI Task Assistant
+              </DialogTitle>
+              <p className="text-sm text-gray-600">Getting help with: {task.title}</p>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsFullScreen(!isFullScreen)}
+              className="shrink-0"
+            >
+              {isFullScreen ? (
+                <Minimize2 className="w-4 h-4" />
+              ) : (
+                <Maximize2 className="w-4 h-4" />
+              )}
+            </Button>
+          </div>
         </DialogHeader>
 
         <div className="flex-1 overflow-y-auto space-y-4 p-4 bg-gray-50 rounded-lg">
