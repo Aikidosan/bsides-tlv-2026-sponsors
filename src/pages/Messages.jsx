@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Send, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from 'utils';
+import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
 
 export default function Messages() {

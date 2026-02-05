@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus, Search, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from 'utils';
+import { createPageUrl } from '@/utils';
 import CompanyCard from '../components/sponsors/CompanyCard';
 import CompanyDialog from '../components/sponsors/CompanyDialog';
 

@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Plus, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from 'utils';
+import { createPageUrl } from '@/utils';
 import TaskBoard from '../components/tasks/TaskBoard';
 import TaskDialog from '../components/tasks/TaskDialog';
 
