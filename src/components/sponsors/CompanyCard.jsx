@@ -139,6 +139,63 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
       </CardHeader>
       
       <CardContent className="space-y-3">
+        {/* Key Contacts - CFO, CTO, HR */}
+        {(company.cfo_name || company.cto_name || company.hr_name) && (
+          <div className="space-y-2 pb-2 border-b border-gray-200">
+            {company.cfo_name && (
+              <div className="flex items-center justify-between text-xs">
+                <div>
+                  <span className="font-semibold text-gray-700">CFO:</span>
+                  <span className="ml-1 text-gray-900">{company.cfo_name}</span>
+                </div>
+                {company.cfo_email && (
+                  <a 
+                    href={`mailto:${company.cfo_email}`}
+                    className="text-blue-600 hover:text-blue-800"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Mail className="w-3 h-3" />
+                  </a>
+                )}
+              </div>
+            )}
+            {company.cto_name && (
+              <div className="flex items-center justify-between text-xs">
+                <div>
+                  <span className="font-semibold text-gray-700">CTO:</span>
+                  <span className="ml-1 text-gray-900">{company.cto_name}</span>
+                </div>
+                {company.cto_email && (
+                  <a 
+                    href={`mailto:${company.cto_email}`}
+                    className="text-blue-600 hover:text-blue-800"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Mail className="w-3 h-3" />
+                  </a>
+                )}
+              </div>
+            )}
+            {company.hr_name && (
+              <div className="flex items-center justify-between text-xs">
+                <div>
+                  <span className="font-semibold text-gray-700">HR:</span>
+                  <span className="ml-1 text-gray-900">{company.hr_name}</span>
+                </div>
+                {company.hr_email && (
+                  <a 
+                    href={`mailto:${company.hr_email}`}
+                    className="text-blue-600 hover:text-blue-800"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Mail className="w-3 h-3" />
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {company.contact_name && (
           <div className="space-y-1">
             <p className="font-medium text-sm text-gray-900">{company.contact_name}</p>
