@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar, CalendarDays, BarChart3, Edit } from 'lucide-react';
+import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar, CalendarDays, BarChart3, Edit, Users } from 'lucide-react';
 import FundraisingProgress from '../components/dashboard/FundraisingProgress';
 import TasksOverview from '../components/dashboard/TasksOverview';
 import CountdownClock from '../components/dashboard/CountdownClock';
@@ -34,6 +34,11 @@ export default function Dashboard() {
   const { data: messages } = useQuery({
     queryKey: ['messages'],
     queryFn: () => base44.entities.Message.list('-created_date', 5),
+  });
+
+  const { data: users } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => base44.entities.User.list(),
   });
 
   const updateTaskMutation = useMutation({
@@ -73,11 +78,17 @@ export default function Dashboard() {
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex items-center gap-3 mb-2 flex-wrap">
                 <h1 className="text-3xl font-bold text-gray-900">BSides TLV 2026</h1>
                 {user && (
                   <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
                     {user.full_name || user.email}
+                  </span>
+                )}
+                {users && (
+                  <span className="text-sm text-green-700 bg-green-100 px-3 py-1 rounded-full flex items-center gap-1.5">
+                    <Users className="w-3 h-3" />
+                    {users.length} team member{users.length !== 1 ? 's' : ''} online
                   </span>
                 )}
               </div>
