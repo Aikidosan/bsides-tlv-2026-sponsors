@@ -13,6 +13,11 @@ import ActivityTracker from '../components/dashboard/ActivityTracker';
 import { format } from 'date-fns';
 
 export default function Dashboard() {
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: () => base44.auth.me(),
+  });
+
   const { data: companies } = useQuery({
     queryKey: ['companies'],
     queryFn: () => base44.entities.Company.list('-updated_date'),
@@ -49,7 +54,14 @@ export default function Dashboard() {
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">BSides TLV 2026</h1>
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-3xl font-bold text-gray-900">BSides TLV 2026</h1>
+                {user && (
+                  <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
+                    {user.full_name || user.email}
+                  </span>
+                )}
+              </div>
               <p className="text-gray-600 mt-1">Fundraising & Event Planning Dashboard</p>
             </div>
             <div className="flex flex-wrap gap-2">
