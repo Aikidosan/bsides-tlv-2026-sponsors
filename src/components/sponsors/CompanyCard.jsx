@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Building2, Mail, Phone, Linkedin, ExternalLink, Calendar, Sparkles, Loader2, Users, TrendingUp, DollarSign, UserPlus, Globe, Lock } from "lucide-react";
+import { Building2, Mail, Phone, Linkedin, ExternalLink, Calendar, Sparkles, Loader2, Users, TrendingUp, DollarSign, UserPlus, Globe, Lock, X } from "lucide-react";
 import { format } from "date-fns";
 import { base44 } from '@/api/base44Client';
 import AddContactDialog from './AddContactDialog';
@@ -101,6 +101,23 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
       alert('Failed to save contact: ' + error.message);
     } finally {
       setIsSavingContact(false);
+    }
+  };
+
+  const handleRemoveContact = async (e, index) => {
+    e.stopPropagation();
+    if (!window.confirm('Remove this contact?')) return;
+    
+    try {
+      const updatedDecisionMakers = [...(company.decision_makers || [])];
+      updatedDecisionMakers.splice(index, 1);
+      await base44.entities.Company.update(company.id, { 
+        decision_makers: updatedDecisionMakers 
+      });
+      queryClient.invalidateQueries(['companies']);
+    } catch (error) {
+      console.error('Failed to remove contact:', error);
+      alert('Failed to remove contact: ' + error.message);
     }
   };
 
@@ -354,9 +371,21 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
               </Button>
             </div>
             {company.decision_makers.map((dm, idx) => (
-              <div key={idx} className="text-xs space-y-0.5">
-                <p className="font-medium text-gray-900">{dm.name}</p>
-                <p className="text-gray-600">{dm.title}</p>
+              <div key={idx} className="text-xs space-y-0.5 group relative">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900">{dm.name}</p>
+                    <p className="text-gray-600">{dm.title}</p>
+                  </div>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="h-5 w-5 opacity-0 group-hover:opacity-100 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    onClick={(e) => handleRemoveContact(e, idx)}
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                </div>
                 <div className="flex flex-wrap gap-2 items-center mt-1">
                   {dm.email && (
                     <a 
