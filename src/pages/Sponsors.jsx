@@ -127,9 +127,12 @@ export default function Sponsors() {
   };
 
   const handleBulkFetchFinancials = async () => {
-    const companiesWithSymbols = companies?.filter(c => c.stock_symbol) || [];
-    if (companiesWithSymbols.length === 0) {
-      alert('No companies have stock symbols set. Add stock symbols first.');
+    const eligibleCompanies = companies?.filter(c => 
+      (c.profile_type === 'public' && c.stock_symbol) || c.profile_type === 'private'
+    ) || [];
+    
+    if (eligibleCompanies.length === 0) {
+      alert('No companies are eligible. Set company types (public/private) and stock symbols for public companies first.');
       return;
     }
     
@@ -138,18 +141,23 @@ export default function Sponsors() {
     let failed = 0;
 
     try {
-      for (const company of companiesWithSymbols) {
+      for (const company of eligibleCompanies) {
         try {
-          await base44.functions.invoke('fetchFinancialData', { 
-            company_id: company.id, 
-            stock_symbol: company.stock_symbol 
-          });
+          if (company.profile_type === 'public' && company.stock_symbol) {
+            await base44.functions.invoke('fetchFinancialData', { 
+              company_id: company.id, 
+              stock_symbol: company.stock_symbol 
+            });
+          } else if (company.profile_type === 'private') {
+            await base44.functions.invoke('fetchPrivateCompanyData', { 
+              company_id: company.id
+            });
+          }
           processed++;
         } catch (err) {
           console.error(`Failed for ${company.name}:`, err);
           failed++;
         }
-        // Small delay to avoid rate limiting
         await new Promise(resolve => setTimeout(resolve, 500));
       }
       
