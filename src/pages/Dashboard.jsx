@@ -39,6 +39,11 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
+      {/* Countdown Clock - Top */}
+      <div className="sticky top-0 z-50">
+        <CountdownClock />
+      </div>
+
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         {/* Header */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
@@ -163,11 +168,6 @@ export default function Dashboard() {
             )}
           </div>
         </div>
-      </div>
-
-      {/* Countdown Clock - Bottom */}
-      <div className="max-w-7xl mx-auto px-6 pb-6">
-        <CountdownClock />
       </div>
     </div>
   );
