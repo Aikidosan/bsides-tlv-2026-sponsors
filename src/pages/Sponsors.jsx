@@ -224,13 +224,15 @@ export default function Sponsors() {
               </Button>
             </Link>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-4xl md:text-5xl font-bold text-black">Sponsor Pipeline</h1>
-                <span className="bg-indigo-100 text-indigo-700 px-3 py-2 rounded-full text-lg md:text-xl font-semibold whitespace-nowrap">
-                  {filteredAndSortedCompanies.length} {filteredAndSortedCompanies.length === 1 ? 'company' : 'companies'}
-                </span>
+              <div className="bg-white/80 backdrop-blur-sm p-4 rounded-lg inline-block">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h1 className="text-4xl md:text-5xl font-bold text-black">Sponsor Pipeline</h1>
+                  <span className="bg-indigo-100 text-indigo-700 px-3 py-2 rounded-full text-lg md:text-xl font-semibold whitespace-nowrap">
+                    {filteredAndSortedCompanies.length} {filteredAndSortedCompanies.length === 1 ? 'company' : 'companies'}
+                  </span>
+                </div>
+                <p className="text-black text-base md:text-lg font-bold hidden md:block">Track outreach to Israeli cybersecurity companies</p>
               </div>
-              <p className="text-black text-base md:text-lg font-bold hidden md:block">Track outreach to Israeli cybersecurity companies</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
