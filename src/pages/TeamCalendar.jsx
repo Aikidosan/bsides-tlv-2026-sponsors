@@ -3,7 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, format } from 'date-fns';
 import TeamLane from '../components/calendar/TeamLane';
 import CalendarGrid from '../components/calendar/CalendarGrid';
@@ -44,9 +46,16 @@ export default function TeamCalendar() {
         {/* Header */}
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Team Calendar</h1>
-              <p className="text-gray-600 mt-1">View all team members' tasks and deadlines</p>
+            <div className="flex items-center gap-4">
+              <Link to={createPageUrl('Dashboard')}>
+                <Button variant="ghost" size="icon">
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
+              </Link>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Team Calendar</h1>
+                <p className="text-gray-600 mt-1">View all team members' tasks and deadlines</p>
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <Button
