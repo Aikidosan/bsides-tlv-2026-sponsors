@@ -3,8 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowLeft, TrendingUp, DollarSign, Users, Target, Mail, Phone, Linkedin, Calendar } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ArrowLeft, TrendingUp, DollarSign, Users, Target, Mail, Phone, Linkedin, Calendar, ExternalLink } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import ConversionFunnel from '../components/analytics/ConversionFunnel';
 import OutreachEffectiveness from '../components/analytics/OutreachEffectiveness';
@@ -12,6 +12,8 @@ import SponsorshipTiers from '../components/analytics/SponsorshipTiers';
 import TimelineTrends from '../components/analytics/TimelineTrends';
 
 export default function Analytics() {
+  const navigate = useNavigate();
+  
   const { data: companies, isLoading: loadingCompanies } = useQuery({
     queryKey: ['companies'],
     queryFn: () => base44.entities.Company.list(),
@@ -70,11 +72,17 @@ export default function Analytics() {
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+          <Card 
+            className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 cursor-pointer hover:shadow-lg transition-all group"
+            onClick={() => navigate(createPageUrl('Sponsors'))}
+          >
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Users className="w-4 h-4 text-blue-600" />
-                Total Leads
+              <CardTitle className="text-sm flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-blue-600" />
+                  Total Leads
+                </div>
+                <ExternalLink className="w-3 h-3 text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity" />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -83,11 +91,17 @@ export default function Analytics() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+          <Card 
+            className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 cursor-pointer hover:shadow-lg transition-all group"
+            onClick={() => navigate(createPageUrl('Sponsors') + '?status=committed,closed')}
+          >
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <Target className="w-4 h-4 text-green-600" />
-                Conversion Rate
+              <CardTitle className="text-sm flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Target className="w-4 h-4 text-green-600" />
+                  Conversion Rate
+                </div>
+                <ExternalLink className="w-3 h-3 text-green-600 opacity-0 group-hover:opacity-100 transition-opacity" />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -96,11 +110,17 @@ export default function Analytics() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+          <Card 
+            className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200 cursor-pointer hover:shadow-lg transition-all group"
+            onClick={() => navigate(createPageUrl('Sponsors') + '?status=committed,closed')}
+          >
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-purple-600" />
-                Total Revenue
+              <CardTitle className="text-sm flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="w-4 h-4 text-purple-600" />
+                  Total Revenue
+                </div>
+                <ExternalLink className="w-3 h-3 text-purple-600 opacity-0 group-hover:opacity-100 transition-opacity" />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -109,11 +129,17 @@ export default function Analytics() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+          <Card 
+            className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200 cursor-pointer hover:shadow-lg transition-all group"
+            onClick={() => navigate(createPageUrl('OutreachTracker'))}
+          >
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-orange-600" />
-                Response Rate
+              <CardTitle className="text-sm flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-orange-600" />
+                  Response Rate
+                </div>
+                <ExternalLink className="w-3 h-3 text-orange-600 opacity-0 group-hover:opacity-100 transition-opacity" />
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -130,39 +156,69 @@ export default function Analytics() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+              <div 
+                className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg cursor-pointer hover:bg-blue-100 transition-colors group"
+                onClick={() => navigate(createPageUrl('OutreachTracker'))}
+              >
                 <Linkedin className="w-6 h-6 text-blue-600" />
-                <div>
+                <div className="flex-1">
                   <p className="text-2xl font-bold text-blue-900">{touchesByType.linkedin || 0}</p>
-                  <p className="text-xs text-blue-700">LinkedIn</p>
+                  <p className="text-xs text-blue-700 flex items-center gap-1">
+                    LinkedIn
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+              <div 
+                className="flex items-center gap-3 p-3 bg-green-50 rounded-lg cursor-pointer hover:bg-green-100 transition-colors group"
+                onClick={() => navigate(createPageUrl('OutreachTracker'))}
+              >
                 <Mail className="w-6 h-6 text-green-600" />
-                <div>
+                <div className="flex-1">
                   <p className="text-2xl font-bold text-green-900">{touchesByType.email || 0}</p>
-                  <p className="text-xs text-green-700">Emails</p>
+                  <p className="text-xs text-green-700 flex items-center gap-1">
+                    Emails
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
+              <div 
+                className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg cursor-pointer hover:bg-purple-100 transition-colors group"
+                onClick={() => navigate(createPageUrl('OutreachTracker'))}
+              >
                 <Phone className="w-6 h-6 text-purple-600" />
-                <div>
+                <div className="flex-1">
                   <p className="text-2xl font-bold text-purple-900">{touchesByType.phone || 0}</p>
-                  <p className="text-xs text-purple-700">Calls</p>
+                  <p className="text-xs text-purple-700 flex items-center gap-1">
+                    Calls
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-orange-50 rounded-lg">
+              <div 
+                className="flex items-center gap-3 p-3 bg-orange-50 rounded-lg cursor-pointer hover:bg-orange-100 transition-colors group"
+                onClick={() => navigate(createPageUrl('OutreachTracker'))}
+              >
                 <Calendar className="w-6 h-6 text-orange-600" />
-                <div>
+                <div className="flex-1">
                   <p className="text-2xl font-bold text-orange-900">{touchesByType.meeting || 0}</p>
-                  <p className="text-xs text-orange-700">Meetings</p>
+                  <p className="text-xs text-orange-700 flex items-center gap-1">
+                    Meetings
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-indigo-50 rounded-lg">
+              <div 
+                className="flex items-center gap-3 p-3 bg-indigo-50 rounded-lg cursor-pointer hover:bg-indigo-100 transition-colors group"
+                onClick={() => navigate(createPageUrl('OutreachTracker'))}
+              >
                 <Target className="w-6 h-6 text-indigo-600" />
-                <div>
+                <div className="flex-1">
                   <p className="text-2xl font-bold text-indigo-900">{touchesByType.proposal || 0}</p>
-                  <p className="text-xs text-indigo-700">Proposals</p>
+                  <p className="text-xs text-indigo-700 flex items-center gap-1">
+                    Proposals
+                    <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </p>
                 </div>
               </div>
             </div>
