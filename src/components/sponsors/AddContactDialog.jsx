@@ -24,17 +24,15 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
     setIsExtracting(true);
     try {
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `Extract all available information from this LinkedIn profile: ${url}
+        prompt: `Extract information from this LinkedIn profile: ${url}
         
-        Return:
-        - Full name
-        - Current job title
-        - Email address (if visible)
-        - Phone number (if visible)
-        - Company name
-        - Location
+        IMPORTANT: 
+        - Extract the person's FULL NAME exactly as shown
+        - Extract their CURRENT JOB TITLE exactly as shown (e.g., "Marketing & Events Specialist", "Chief Executive Officer", "VP of Marketing")
+        - Extract email if visible
+        - Extract phone if visible
         
-        Be thorough and extract everything you can see.`,
+        DO NOT use placeholder text like "not specified", "N/A", or similar. If a field is not available, return null for that field.`,
         add_context_from_internet: true,
         response_json_schema: {
           type: "object",
@@ -42,18 +40,16 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
             name: { type: "string" },
             title: { type: "string" },
             email: { type: ["string", "null"] },
-            phone: { type: ["string", "null"] },
-            company: { type: ["string", "null"] },
-            location: { type: ["string", "null"] }
+            phone: { type: ["string", "null"] }
           }
         }
       });
 
-      if (response.name) {
+      if (response.name && response.title) {
         setFormData(prev => ({
           ...prev,
-          name: response.name || prev.name,
-          title: response.title || prev.title,
+          name: response.name,
+          title: response.title,
           email: response.email || prev.email,
           phone: response.phone || prev.phone
         }));
