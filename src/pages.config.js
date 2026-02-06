@@ -48,6 +48,7 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AIResearch from './pages/AIResearch';
+import ActivityLog from './pages/ActivityLog';
 import AdminUsers from './pages/AdminUsers';
 import Analytics from './pages/Analytics';
 import CEOOutreach from './pages/CEOOutreach';
@@ -57,11 +58,11 @@ import OutreachTracker from './pages/OutreachTracker';
 import Sponsors from './pages/Sponsors';
 import Tasks from './pages/Tasks';
 import TeamCalendar from './pages/TeamCalendar';
-import ActivityLog from './pages/ActivityLog';
 
 
 export const PAGES = {
     "AIResearch": AIResearch,
+    "ActivityLog": ActivityLog,
     "AdminUsers": AdminUsers,
     "Analytics": Analytics,
     "CEOOutreach": CEOOutreach,
@@ -71,7 +72,6 @@ export const PAGES = {
     "Sponsors": Sponsors,
     "Tasks": Tasks,
     "TeamCalendar": TeamCalendar,
-    "ActivityLog": ActivityLog,
 }
 
 export const pagesConfig = {
