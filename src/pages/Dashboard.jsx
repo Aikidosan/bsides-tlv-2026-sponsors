@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar, CalendarDays } from 'lucide-react';
+import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar, CalendarDays, BarChart3 } from 'lucide-react';
 import FundraisingProgress from '../components/dashboard/FundraisingProgress';
 import TasksOverview from '../components/dashboard/TasksOverview';
 import CountdownClock from '../components/dashboard/CountdownClock';
@@ -52,6 +52,12 @@ export default function Dashboard() {
                 <Button className="bg-indigo-600 hover:bg-indigo-700">
                   <Building2 className="w-4 h-4 mr-2" />
                   Sponsors
+                </Button>
+              </Link>
+              <Link to={createPageUrl('Analytics')}>
+                <Button variant="outline" className="border-green-300 text-green-700 hover:bg-green-50">
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  Analytics
                 </Button>
               </Link>
               <Link to={createPageUrl('Tasks')}>
