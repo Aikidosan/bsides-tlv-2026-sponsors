@@ -358,7 +358,7 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
               <div key={idx} className="text-xs space-y-0.5">
                 <p className="font-medium text-gray-900">{dm.name}</p>
                 <p className="text-gray-600">{dm.title}</p>
-                {dm.linkedin_url && (
+                {dm.linkedin_url ? (
                   <a
                     href={dm.linkedin_url}
                     target="_blank"
@@ -369,6 +369,11 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
                     <Linkedin className="w-3 h-3" />
                     <span>View Profile</span>
                   </a>
+                ) : (
+                  <span className="flex items-center gap-1 text-gray-400 cursor-not-allowed">
+                    <Linkedin className="w-3 h-3" />
+                    <span>No LinkedIn URL</span>
+                  </span>
                 )}
               </div>
             ))}
