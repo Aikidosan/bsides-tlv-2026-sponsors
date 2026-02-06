@@ -51,9 +51,23 @@ Deno.serve(async (req) => {
             }
         });
 
-        // Update company with decision makers
+        // Merge new decision makers with existing ones
+        const existingDecisionMakers = company.decision_makers || [];
+        const newDecisionMakers = research.decision_makers || [];
+        
+        // Combine and deduplicate by name
+        const mergedDecisionMakers = [...existingDecisionMakers];
+        for (const newDM of newDecisionMakers) {
+            const exists = existingDecisionMakers.some(dm => 
+                dm.name?.toLowerCase() === newDM.name?.toLowerCase()
+            );
+            if (!exists) {
+                mergedDecisionMakers.push(newDM);
+            }
+        }
+        
         await base44.entities.Company.update(company_id, {
-            decision_makers: research.decision_makers || []
+            decision_makers: mergedDecisionMakers
         });
 
         return Response.json({ 
