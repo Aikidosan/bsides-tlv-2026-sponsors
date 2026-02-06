@@ -3,7 +3,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Save, X } from 'lucide-react';
+import { Save, X, Loader2 } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 export default function AddContactDialog({ company, onClose, onSave, isSaving }) {
   const [formData, setFormData] = useState({
@@ -11,6 +12,40 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
     title: '',
     linkedin_url: ''
   });
+  const [isExtracting, setIsExtracting] = useState(false);
+
+  const handleLinkedInPaste = async (url) => {
+    if (!url || !url.includes('linkedin.com')) {
+      return;
+    }
+
+    setIsExtracting(true);
+    try {
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `Extract the person's name and job title from this LinkedIn profile URL: ${url}. Return the full name and current job title.`,
+        add_context_from_internet: true,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            name: { type: "string" },
+            title: { type: "string" }
+          }
+        }
+      });
+
+      if (response.name) {
+        setFormData(prev => ({
+          ...prev,
+          name: response.name || prev.name,
+          title: response.title || prev.title
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to extract LinkedIn data:', error);
+    } finally {
+      setIsExtracting(false);
+    }
+  };
 
   const handleSave = () => {
     if (!formData.name || !formData.title) {
@@ -58,12 +93,25 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
 
           <div className="space-y-2">
             <Label htmlFor="linkedin_url">LinkedIn URL</Label>
-            <Input
-              id="linkedin_url"
-              value={formData.linkedin_url}
-              onChange={(e) => setFormData({...formData, linkedin_url: e.target.value})}
-              placeholder="https://linkedin.com/in/..."
-            />
+            <div className="relative">
+              <Input
+                id="linkedin_url"
+                value={formData.linkedin_url}
+                onChange={(e) => {
+                  const url = e.target.value;
+                  setFormData({...formData, linkedin_url: url});
+                }}
+                onBlur={(e) => handleLinkedInPaste(e.target.value)}
+                placeholder="https://linkedin.com/in/..."
+                disabled={isExtracting}
+              />
+              {isExtracting && (
+                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-indigo-600" />
+              )}
+            </div>
+            {isExtracting && (
+              <p className="text-xs text-indigo-600">Extracting profile info...</p>
+            )}
           </div>
         </div>
 
