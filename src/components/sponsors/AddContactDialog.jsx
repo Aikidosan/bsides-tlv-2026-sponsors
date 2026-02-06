@@ -65,7 +65,7 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle>Add Contact to {company.name}</DialogTitle>
         </DialogHeader>
@@ -77,6 +77,7 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
               id="name"
               value={formData.name}
               onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onClick={(e) => e.stopPropagation()}
               placeholder="John Doe"
             />
           </div>
@@ -87,6 +88,7 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
               id="title"
               value={formData.title}
               onChange={(e) => setFormData({...formData, title: e.target.value})}
+              onClick={(e) => e.stopPropagation()}
               placeholder="CEO, CTO, VP Marketing"
             />
           </div>
@@ -101,6 +103,7 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
                   const url = e.target.value;
                   setFormData({...formData, linkedin_url: url});
                 }}
+                onClick={(e) => e.stopPropagation()}
                 onBlur={(e) => handleLinkedInPaste(e.target.value)}
                 placeholder="https://linkedin.com/in/..."
                 disabled={isExtracting}
