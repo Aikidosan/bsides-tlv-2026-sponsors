@@ -214,93 +214,98 @@ export default function Sponsors() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
-      <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <div className="max-w-7xl mx-auto p-3 md:p-6 space-y-4 md:space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4">
           <div className="flex items-center gap-4">
             <Link to={createPageUrl('Dashboard')}>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="shrink-0">
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
-            <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold">Sponsor Pipeline</h1>
-                <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-semibold">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-2xl md:text-3xl font-bold">Sponsor Pipeline</h1>
+                <span className="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full text-xs md:text-sm font-semibold whitespace-nowrap">
                   {filteredAndSortedCompanies.length} {filteredAndSortedCompanies.length === 1 ? 'company' : 'companies'}
                 </span>
               </div>
-              <p className="text-gray-600">Track outreach to Israeli cybersecurity companies</p>
+              <p className="text-gray-600 text-sm md:text-base hidden md:block">Track outreach to Israeli cybersecurity companies</p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button 
               onClick={handleBulkDecisionMakers}
               variant="outline"
+              size="sm"
               className="border-blue-300 text-blue-700 hover:bg-blue-50"
               disabled={isBulkDecisionMakers}
             >
               {isBulkDecisionMakers ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Researching...
+                  <Loader2 className="w-4 h-4 md:mr-2 animate-spin" />
+                  <span className="hidden md:inline">Researching...</span>
                 </>
               ) : (
                 <>
-                  <Linkedin className="w-4 h-4 mr-2" />
-                  Decision Makers All
+                  <Linkedin className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Decision Makers All</span>
                 </>
               )}
             </Button>
             <Button 
               onClick={handleBulkAutoResearch}
               variant="outline"
+              size="sm"
               className="border-indigo-300 text-indigo-700 hover:bg-indigo-50"
               disabled={isBulkResearching}
             >
               {isBulkResearching ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Researching...
+                  <Loader2 className="w-4 h-4 md:mr-2 animate-spin" />
+                  <span className="hidden md:inline">Researching...</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Auto Research All
+                  <Sparkles className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Auto Research All</span>
                 </>
               )}
             </Button>
             <Button 
               onClick={handleBulkFetchFinancials}
               variant="outline"
+              size="sm"
               className="border-green-300 text-green-700 hover:bg-green-50"
               disabled={isBulkFetchingFinancials}
             >
               {isBulkFetchingFinancials ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Fetching...
+                  <Loader2 className="w-4 h-4 md:mr-2 animate-spin" />
+                  <span className="hidden md:inline">Fetching...</span>
                 </>
               ) : (
                 <>
-                  <ArrowUpDown className="w-4 h-4 mr-2" />
-                  Fetch All Financial Data
+                  <ArrowUpDown className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Fetch All Financial Data</span>
                 </>
               )}
             </Button>
             <Button 
               onClick={handleBulkImportIsraeli}
               variant="outline"
+              size="sm"
               className="border-purple-300 text-purple-700 hover:bg-purple-50"
             >
-              <Plus className="w-4 h-4 mr-2" />
-              Import Israeli Companies
+              <Plus className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:inline">Import Israeli Companies</span>
             </Button>
             <Button 
               onClick={() => {
                 setSelectedCompany(null);
                 setShowDialog(true);
               }}
+              size="sm"
               className="bg-indigo-600 hover:bg-indigo-700"
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -339,10 +344,10 @@ export default function Sponsors() {
           </div>
           
           {/* Sort and View Controls */}
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <ArrowUpDown className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-600">Sort by:</span>
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto">
+              <ArrowUpDown className="w-4 h-4 text-gray-500 shrink-0" />
+              <span className="text-sm text-gray-600 shrink-0">Sort by:</span>
               <div className="flex gap-2">
                 {[
                   { value: 'size', label: 'Biggest First' },
@@ -375,8 +380,8 @@ export default function Sponsors() {
                 size="sm"
                 onClick={() => setViewMode('map')}
               >
-                <Map className="w-4 h-4 mr-2" />
-                Map
+                <Map className="w-4 h-4 md:mr-2" />
+                <span className="hidden md:inline">Map</span>
               </Button>
             </div>
           </div>

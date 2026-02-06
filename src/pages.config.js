@@ -49,6 +49,7 @@
  */
 import AIResearch from './pages/AIResearch';
 import AdminUsers from './pages/AdminUsers';
+import Analytics from './pages/Analytics';
 import CEOOutreach from './pages/CEOOutreach';
 import Dashboard from './pages/Dashboard';
 import Messages from './pages/Messages';
@@ -56,12 +57,12 @@ import OutreachTracker from './pages/OutreachTracker';
 import Sponsors from './pages/Sponsors';
 import Tasks from './pages/Tasks';
 import TeamCalendar from './pages/TeamCalendar';
-import Analytics from './pages/Analytics';
 
 
 export const PAGES = {
     "AIResearch": AIResearch,
     "AdminUsers": AdminUsers,
+    "Analytics": Analytics,
     "CEOOutreach": CEOOutreach,
     "Dashboard": Dashboard,
     "Messages": Messages,
@@ -69,7 +70,6 @@ export const PAGES = {
     "Sponsors": Sponsors,
     "Tasks": Tasks,
     "TeamCalendar": TeamCalendar,
-    "Analytics": Analytics,
 }
 
 export const pagesConfig = {
