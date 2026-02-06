@@ -43,7 +43,7 @@ export default function FundraisingProgress({ companies }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="space-y-4">
           <Link to={createPageUrl('Sponsors')}>
             <div className="bg-white rounded-lg p-6 border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer text-center">
               <p className="text-sm font-semibold text-gray-700 mb-4">Target Companies</p>
