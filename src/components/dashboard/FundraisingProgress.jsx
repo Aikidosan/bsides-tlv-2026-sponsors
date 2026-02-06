@@ -77,7 +77,7 @@ export default function FundraisingProgress({ companies }) {
             <div className="bg-white rounded-lg p-3 md:p-4 border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all cursor-pointer">
               <div className="flex items-center gap-1 md:gap-2 mb-2">
                 <Target className="w-3 h-3 md:w-4 md:h-4 text-purple-500 shrink-0" />
-                <span className="text-xs text-gray-600 font-medium leading-tight">Meetings Scheduled</span>
+                <span className="text-xs text-gray-600 font-medium leading-tight whitespace-nowrap">Meetings Scheduled</span>
               </div>
               <div className="space-y-1">
                 <p className="text-2xl md:text-3xl font-bold text-gray-900">{statusCounts.negotiating || 0}</p>
