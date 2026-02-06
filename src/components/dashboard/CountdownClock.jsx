@@ -10,6 +10,10 @@ export default function CountdownClock() {
     const saved = localStorage.getItem('countdownClockVisible');
     return saved === null ? true : saved === 'true';
   });
+  const [isExpanded, setIsExpanded] = useState(() => {
+    const saved = localStorage.getItem('countdownClockExpanded');
+    return saved === null ? true : saved === 'true';
+  });
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -38,20 +42,63 @@ export default function CountdownClock() {
     localStorage.setItem('countdownClockVisible', 'false');
   };
 
+  const toggleExpanded = () => {
+    const newState = !isExpanded;
+    setIsExpanded(newState);
+    localStorage.setItem('countdownClockExpanded', String(newState));
+  };
+
   if (!isVisible) return null;
+
+  if (!isExpanded) {
+    return (
+      <Card className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white overflow-hidden cursor-pointer hover:shadow-lg transition-all">
+        <div className="px-4 py-2 flex items-center justify-between" onClick={toggleExpanded}>
+          <div className="flex items-center gap-3">
+            <Calendar className="w-4 h-4" />
+            <span className="text-sm font-semibold">BSides TLV 2026</span>
+            <span className="text-sm opacity-90">
+              {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
+            </span>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleHide();
+            }}
+            className="text-white hover:bg-white/20 h-6 w-6"
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white overflow-hidden">
       <div className="p-8 text-center relative">
         <div className="absolute inset-0 bg-black/10"></div>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleHide}
-          className="absolute top-4 right-4 z-20 text-white hover:bg-white/20"
-        >
-          <X className="w-5 h-5" />
-        </Button>
+        <div className="absolute top-4 right-4 z-20 flex gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleExpanded}
+            className="text-white hover:bg-white/20"
+          >
+            <Clock className="w-5 h-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleHide}
+            className="text-white hover:bg-white/20"
+          >
+            <X className="w-5 h-5" />
+          </Button>
+        </div>
         <div className="relative z-10">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Calendar className="w-6 h-6" />
