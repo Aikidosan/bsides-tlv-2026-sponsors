@@ -43,60 +43,60 @@ export default function FundraisingProgress({ companies }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           <Link to={createPageUrl('Sponsors')}>
-            <div className="bg-white rounded-lg p-4 border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer">
-              <div className="flex items-center gap-2 mb-2">
-                <Building2 className="w-4 h-4 text-indigo-500" />
-                <span className="text-xs text-gray-600 font-medium">Target Companies</span>
+            <div className="bg-white rounded-lg p-3 md:p-4 border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer">
+              <div className="flex items-center gap-1 md:gap-2 mb-2">
+                <Building2 className="w-3 h-3 md:w-4 md:h-4 text-indigo-500 shrink-0" />
+                <span className="text-xs text-gray-600 font-medium leading-tight">Target Companies</span>
               </div>
               <div className="space-y-2">
-                <p className="text-3xl font-bold text-gray-900">{companies?.length || 0}</p>
+                <p className="text-2xl md:text-3xl font-bold text-gray-900">{companies?.length || 0}</p>
                 <Progress value={Math.min(((companies?.length || 0) / 200) * 100, 100)} className="h-2" />
-                <p className="text-xs text-gray-600">{Math.min(((companies?.length || 0) / 200) * 100, 100).toFixed(0)}% of goal reached</p>
+                <p className="text-xs text-gray-600 leading-tight">{Math.min(((companies?.length || 0) / 200) * 100, 100).toFixed(0)}% of goal reached</p>
               </div>
             </div>
           </Link>
           
           <Link to={createPageUrl('Sponsors') + '?status=contacted,responded'}>
-            <div className="bg-white rounded-lg p-4 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer">
-              <div className="flex items-center gap-2 mb-2">
-                <DollarSign className="w-4 h-4 text-blue-500" />
-                <span className="text-xs text-gray-600 font-medium">Outreach Started</span>
+            <div className="bg-white rounded-lg p-3 md:p-4 border border-gray-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer">
+              <div className="flex items-center gap-1 md:gap-2 mb-2">
+                <DollarSign className="w-3 h-3 md:w-4 md:h-4 text-blue-500 shrink-0" />
+                <span className="text-xs text-gray-600 font-medium leading-tight">Outreach Started</span>
               </div>
               <div className="space-y-1">
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl md:text-3xl font-bold text-gray-900">
                   {(statusCounts.contacted || 0) + (statusCounts.responded || 0)}
                 </p>
-                <p className="text-xs text-gray-600">Companies contacted via LinkedIn/Email</p>
+                <p className="text-xs text-gray-600 leading-tight">Companies contacted via LinkedIn/Email</p>
               </div>
             </div>
           </Link>
           
           <Link to={createPageUrl('Tasks') + '?category=fundraising'}>
-            <div className="bg-white rounded-lg p-4 border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all cursor-pointer">
-              <div className="flex items-center gap-2 mb-2">
-                <Target className="w-4 h-4 text-purple-500" />
-                <span className="text-xs text-gray-600 font-medium">Meetings Scheduled</span>
+            <div className="bg-white rounded-lg p-3 md:p-4 border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all cursor-pointer">
+              <div className="flex items-center gap-1 md:gap-2 mb-2">
+                <Target className="w-3 h-3 md:w-4 md:h-4 text-purple-500 shrink-0" />
+                <span className="text-xs text-gray-600 font-medium leading-tight">Meetings Scheduled</span>
               </div>
               <div className="space-y-1">
-                <p className="text-3xl font-bold text-gray-900">{statusCounts.negotiating || 0}</p>
-                <p className="text-xs text-gray-600">Virtual meetings with prospects</p>
+                <p className="text-2xl md:text-3xl font-bold text-gray-900">{statusCounts.negotiating || 0}</p>
+                <p className="text-xs text-gray-600 leading-tight">Virtual meetings with prospects</p>
               </div>
             </div>
           </Link>
           
           <Link to={createPageUrl('Sponsors') + '?status=committed,closed'}>
-            <div className="bg-white rounded-lg p-4 border border-gray-200 hover:border-green-300 hover:shadow-md transition-all cursor-pointer">
-              <div className="flex items-center gap-2 mb-2">
-                <TrendingUp className="w-4 h-4 text-green-500" />
-                <span className="text-xs text-gray-600 font-medium">Commitments</span>
+            <div className="bg-white rounded-lg p-3 md:p-4 border border-gray-200 hover:border-green-300 hover:shadow-md transition-all cursor-pointer">
+              <div className="flex items-center gap-1 md:gap-2 mb-2">
+                <TrendingUp className="w-3 h-3 md:w-4 md:h-4 text-green-500 shrink-0" />
+                <span className="text-xs text-gray-600 font-medium leading-tight">Commitments</span>
               </div>
               <div className="space-y-1">
-                <p className="text-3xl font-bold text-gray-900">
+                <p className="text-2xl md:text-3xl font-bold text-gray-900">
                   {(statusCounts.committed || 0) + (statusCounts.closed || 0)}
                 </p>
-                <p className="text-xs text-gray-600">Sponsors committed or closed</p>
+                <p className="text-xs text-gray-600 leading-tight">Sponsors committed or closed</p>
               </div>
             </div>
           </Link>
