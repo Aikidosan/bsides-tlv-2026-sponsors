@@ -10,7 +10,9 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
   const [formData, setFormData] = useState({
     name: '',
     title: '',
-    linkedin_url: ''
+    linkedin_url: '',
+    email: '',
+    phone: ''
   });
   const [isExtracting, setIsExtracting] = useState(false);
 
@@ -22,13 +24,27 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
     setIsExtracting(true);
     try {
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `Extract the person's name and job title from this LinkedIn profile URL: ${url}. Return the full name and current job title.`,
+        prompt: `Extract all available information from this LinkedIn profile: ${url}
+        
+        Return:
+        - Full name
+        - Current job title
+        - Email address (if visible)
+        - Phone number (if visible)
+        - Company name
+        - Location
+        
+        Be thorough and extract everything you can see.`,
         add_context_from_internet: true,
         response_json_schema: {
           type: "object",
           properties: {
             name: { type: "string" },
-            title: { type: "string" }
+            title: { type: "string" },
+            email: { type: ["string", "null"] },
+            phone: { type: ["string", "null"] },
+            company: { type: ["string", "null"] },
+            location: { type: ["string", "null"] }
           }
         }
       });
@@ -37,7 +53,9 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
         setFormData(prev => ({
           ...prev,
           name: response.name || prev.name,
-          title: response.title || prev.title
+          title: response.title || prev.title,
+          email: response.email || prev.email,
+          phone: response.phone || prev.phone
         }));
       }
     } catch (error) {
@@ -90,6 +108,29 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
               onChange={(e) => setFormData({...formData, title: e.target.value})}
               onClick={(e) => e.stopPropagation()}
               placeholder="CEO, CTO, VP Marketing"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              onClick={(e) => e.stopPropagation()}
+              placeholder="email@company.com"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone</Label>
+            <Input
+              id="phone"
+              value={formData.phone}
+              onChange={(e) => setFormData({...formData, phone: e.target.value})}
+              onClick={(e) => e.stopPropagation()}
+              placeholder="+972-50-123-4567"
             />
           </div>
 
