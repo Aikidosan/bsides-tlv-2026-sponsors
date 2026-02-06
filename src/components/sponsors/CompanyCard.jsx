@@ -39,8 +39,7 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
     setIsResearching(true);
     try {
       await base44.functions.invoke('linkedinResearch', { company_id: company.id });
-      // Refresh the page to show updated data
-      window.location.reload();
+      queryClient.invalidateQueries(['companies']);
     } catch (error) {
       console.error('LinkedIn research failed:', error);
       alert('Failed to research decision makers. Please try again.');
@@ -68,7 +67,7 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
         alert('Please set company type (public/private) first.');
         return;
       }
-      window.location.reload();
+      queryClient.invalidateQueries(['companies']);
     } catch (error) {
       console.error('Financial fetch failed:', error);
       alert('Failed to fetch financial data: ' + error.message);
@@ -82,7 +81,7 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
     setIsAutoResearching(true);
     try {
       await base44.functions.invoke('autoResearchCompany', { company_id: company.id });
-      window.location.reload();
+      queryClient.invalidateQueries(['companies']);
     } catch (error) {
       console.error('Auto research failed:', error);
       alert('Failed to auto research: ' + error.message);
