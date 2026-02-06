@@ -6,10 +6,7 @@ import { Calendar, Clock, X } from 'lucide-react';
 export default function CountdownClock() {
   const EVENT_DATE = new Date('2026-06-01T09:00:00');
   const [timeLeft, setTimeLeft] = useState({});
-  const [isVisible, setIsVisible] = useState(() => {
-    const saved = localStorage.getItem('countdownClockVisible');
-    return saved === null ? true : saved === 'true';
-  });
+  const [isVisible, setIsVisible] = useState(true);
   const [isExpanded, setIsExpanded] = useState(() => {
     const saved = localStorage.getItem('countdownClockExpanded');
     return saved === null ? true : saved === 'true';
@@ -37,18 +34,13 @@ export default function CountdownClock() {
     return () => clearInterval(timer);
   }, []);
 
-  const handleHide = () => {
-    setIsVisible(false);
-    localStorage.setItem('countdownClockVisible', 'false');
-  };
+
 
   const toggleExpanded = () => {
     const newState = !isExpanded;
     setIsExpanded(newState);
     localStorage.setItem('countdownClockExpanded', String(newState));
   };
-
-  if (!isVisible) return null;
 
   if (!isExpanded) {
     return (
@@ -61,17 +53,6 @@ export default function CountdownClock() {
               {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
             </span>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleHide();
-            }}
-            className="text-white hover:bg-white/20 h-6 w-6"
-          >
-            <X className="w-4 h-4" />
-          </Button>
         </div>
       </Card>
     );
@@ -81,7 +62,7 @@ export default function CountdownClock() {
     <Card className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white overflow-hidden">
       <div className="p-8 text-center relative">
         <div className="absolute inset-0 bg-black/10"></div>
-        <div className="absolute top-4 right-4 z-20 flex gap-2">
+        <div className="absolute top-4 right-4 z-20">
           <Button
             variant="ghost"
             size="icon"
@@ -89,14 +70,6 @@ export default function CountdownClock() {
             className="text-white hover:bg-white/20"
           >
             <Clock className="w-5 h-5" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleHide}
-            className="text-white hover:bg-white/20"
-          >
-            <X className="w-5 h-5" />
           </Button>
         </div>
         <div className="relative z-10">
