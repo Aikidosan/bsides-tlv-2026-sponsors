@@ -161,6 +161,12 @@ export default function Dashboard() {
                   Admin
                 </Button>
               </Link>
+              <Link to={createPageUrl('ActivityLog')}>
+                <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Activity Log
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

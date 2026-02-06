@@ -57,6 +57,7 @@ import OutreachTracker from './pages/OutreachTracker';
 import Sponsors from './pages/Sponsors';
 import Tasks from './pages/Tasks';
 import TeamCalendar from './pages/TeamCalendar';
+import ActivityLog from './pages/ActivityLog';
 
 
 export const PAGES = {
@@ -70,6 +71,7 @@ export const PAGES = {
     "Sponsors": Sponsors,
     "Tasks": Tasks,
     "TeamCalendar": TeamCalendar,
+    "ActivityLog": ActivityLog,
 }
 
 export const pagesConfig = {
