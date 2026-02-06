@@ -357,23 +357,40 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
               <div key={idx} className="text-xs space-y-0.5">
                 <p className="font-medium text-gray-900">{dm.name}</p>
                 <p className="text-gray-600">{dm.title}</p>
-                {dm.linkedin_url ? (
-                  <a
-                    href={dm.linkedin_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Linkedin className="w-3 h-3" />
-                    <span>View Profile</span>
-                  </a>
-                ) : (
-                  <span className="flex items-center gap-1 text-gray-400 cursor-not-allowed">
-                    <Linkedin className="w-3 h-3" />
-                    <span>No LinkedIn URL</span>
-                  </span>
-                )}
+                <div className="flex flex-wrap gap-2 items-center mt-1">
+                  {dm.email && (
+                    <a 
+                      href={`mailto:${dm.email}`}
+                      className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Mail className="w-3 h-3" />
+                      <span>{dm.email}</span>
+                    </a>
+                  )}
+                  {dm.phone && (
+                    <a 
+                      href={`tel:${dm.phone}`}
+                      className="flex items-center gap-1 text-gray-600 hover:text-gray-800"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Phone className="w-3 h-3" />
+                      <span>{dm.phone}</span>
+                    </a>
+                  )}
+                  {dm.linkedin_url && (
+                    <a
+                      href={dm.linkedin_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Linkedin className="w-3 h-3" />
+                      <span>LinkedIn</span>
+                    </a>
+                  )}
+                </div>
               </div>
             ))}
           </div>
