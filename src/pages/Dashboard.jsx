@@ -4,7 +4,8 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar, CalendarDays, BarChart3, Edit, Users } from 'lucide-react';
+import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar, CalendarDays, BarChart3, Edit, Users, LogOut, User } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import FundraisingProgress from '../components/dashboard/FundraisingProgress';
 import TasksOverview from '../components/dashboard/TasksOverview';
 import CountdownClock from '../components/dashboard/CountdownClock';
@@ -81,9 +82,20 @@ export default function Dashboard() {
               <div className="flex items-center gap-3 mb-2 flex-wrap">
                 <h1 className="text-3xl font-bold text-gray-900">BSides TLV 2026</h1>
                 {user && (
-                  <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                    {user.full_name || user.email}
-                  </span>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full h-auto">
+                        <User className="w-3 h-3 mr-1" />
+                        {user.full_name || user.email}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                      <DropdownMenuItem onClick={() => base44.auth.logout()}>
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Logout
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 )}
                 {users && users.length > 0 && (
                   <span className="text-sm text-green-700 bg-green-100 px-3 py-1 rounded-full flex items-center gap-1.5">
