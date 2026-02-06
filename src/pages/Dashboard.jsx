@@ -1,10 +1,10 @@
-import React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar, CalendarDays, BarChart3 } from 'lucide-react';
+import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar, CalendarDays, BarChart3, Edit } from 'lucide-react';
 import FundraisingProgress from '../components/dashboard/FundraisingProgress';
 import TasksOverview from '../components/dashboard/TasksOverview';
 import CountdownClock from '../components/dashboard/CountdownClock';
@@ -13,6 +13,9 @@ import ActivityTracker from '../components/dashboard/ActivityTracker';
 import { format } from 'date-fns';
 
 export default function Dashboard() {
+  const queryClient = useQueryClient();
+  const [editingTask, setEditingTask] = useState(null);
+
   const { data: user } = useQuery({
     queryKey: ['user'],
     queryFn: () => base44.auth.me(),
@@ -32,6 +35,22 @@ export default function Dashboard() {
     queryKey: ['messages'],
     queryFn: () => base44.entities.Message.list('-created_date', 5),
   });
+
+  const updateTaskMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.Task.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['tasks']);
+      setEditingTask(null);
+    },
+  });
+
+  const handleTakeOwnership = (task) => {
+    if (!user) return;
+    updateTaskMutation.mutate({
+      id: task.id,
+      data: { ...task, assigned_to: user.email }
+    });
+  };
 
   const upcomingTasks = tasks?.filter(t => {
     if (!t.deadline || t.status === 'done') return false;
@@ -145,11 +164,24 @@ export default function Dashboard() {
             {upcomingTasks.length > 0 ? (
               <div className="space-y-3">
                 {upcomingTasks.map(task => (
-                  <div key={task.id} className="border-l-4 border-orange-400 pl-3 py-2">
-                    <p className="font-medium text-sm">{task.title}</p>
-                    <p className="text-xs text-gray-600">
-                      Due: {format(new Date(task.deadline), 'MMM d, yyyy')}
-                    </p>
+                  <div key={task.id} className="border-l-4 border-orange-400 pl-3 py-2 flex items-start justify-between group">
+                    <div className="flex-1">
+                      <p className="font-medium text-sm">{task.title}</p>
+                      <p className="text-xs text-gray-600">
+                        Due: {format(new Date(task.deadline), 'MMM d, yyyy')}
+                        {task.assigned_to && <span className="ml-2">• {task.assigned_to}</span>}
+                      </p>
+                    </div>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => handleTakeOwnership(task)}
+                      disabled={task.assigned_to === user?.email || updateTaskMutation.isPending}
+                      title={task.assigned_to === user?.email ? "Already assigned to you" : "Take ownership"}
+                    >
+                      <Edit className="w-3 h-3" />
+                    </Button>
                   </div>
                 ))}
               </div>
