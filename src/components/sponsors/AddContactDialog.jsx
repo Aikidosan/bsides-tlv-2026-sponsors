@@ -23,6 +23,16 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
 
     setIsExtracting(true);
     try {
+      // First, try to get email with Wiza
+      let wizaData = null;
+      try {
+        const wizaResponse = await base44.functions.invoke('findEmailWithWiza', { linkedin_url: url });
+        wizaData = wizaResponse.data;
+      } catch (wizaError) {
+        console.log('Wiza lookup failed, falling back to web scraping:', wizaError);
+      }
+
+      // Then extract other info with LLM
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: `Extract information from this LinkedIn profile: ${url}
         
@@ -48,10 +58,12 @@ export default function AddContactDialog({ company, onClose, onSave, isSaving })
       if (response.name && response.title) {
         setFormData(prev => ({
           ...prev,
-          name: response.name,
-          title: response.title,
-          email: response.email || prev.email,
-          phone: response.phone || prev.phone
+          name: wizaData?.first_name && wizaData?.last_name 
+            ? `${wizaData.first_name} ${wizaData.last_name}` 
+            : response.name,
+          title: wizaData?.title || response.title,
+          email: wizaData?.email || response.email || prev.email,
+          phone: wizaData?.phone || response.phone || prev.phone
         }));
       }
     } catch (error) {
