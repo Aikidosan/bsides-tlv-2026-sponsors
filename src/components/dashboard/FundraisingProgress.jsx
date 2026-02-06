@@ -43,7 +43,7 @@ export default function FundraisingProgress({ companies }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4">
           <Link to={createPageUrl('Sponsors')}>
             <div className="bg-white rounded-lg p-3 md:p-4 border border-gray-200 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer">
               <div className="flex items-center gap-1 md:gap-2 mb-2">
