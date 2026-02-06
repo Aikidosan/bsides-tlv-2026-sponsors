@@ -85,10 +85,10 @@ export default function Dashboard() {
                     {user.full_name || user.email}
                   </span>
                 )}
-                {users && (
+                {users && users.length > 0 && (
                   <span className="text-sm text-green-700 bg-green-100 px-3 py-1 rounded-full flex items-center gap-1.5">
                     <Users className="w-3 h-3" />
-                    {users.length} team member{users.length !== 1 ? 's' : ''} online
+                    {users.map(u => u.full_name || u.email).join(', ')}
                   </span>
                 )}
               </div>
