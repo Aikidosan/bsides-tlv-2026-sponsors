@@ -51,10 +51,7 @@ export default function FundraisingProgress({ companies }) {
                 <span className="text-xs text-gray-600 font-medium">Target Companies</span>
               </div>
               <div className="space-y-2">
-                <div className="flex items-baseline gap-1">
-                  <p className="text-3xl font-bold text-gray-900">{companies?.length || 0}</p>
-                  <span className="text-sm text-gray-500">/ 200</span>
-                </div>
+                <p className="text-3xl font-bold text-gray-900">{companies?.length || 0}</p>
                 <Progress value={Math.min(((companies?.length || 0) / 200) * 100, 100)} className="h-2" />
                 <p className="text-xs text-gray-600">{Math.min(((companies?.length || 0) / 200) * 100, 100).toFixed(0)}% of goal reached</p>
               </div>
