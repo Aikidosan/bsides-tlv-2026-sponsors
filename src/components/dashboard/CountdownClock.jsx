@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, X } from 'lucide-react';
+import { Calendar, ChevronDown, ChevronUp } from 'lucide-react';
 
 export default function CountdownClock() {
   const EVENT_DATE = new Date('2026-06-01T09:00:00');
@@ -53,6 +53,7 @@ export default function CountdownClock() {
               {timeLeft.days}d {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s
             </span>
           </div>
+          <ChevronDown className="w-4 h-4" />
         </div>
       </Card>
     );
@@ -69,7 +70,7 @@ export default function CountdownClock() {
             onClick={toggleExpanded}
             className="text-white hover:bg-white/20"
           >
-            <Clock className="w-5 h-5" />
+            <ChevronUp className="w-5 h-5" />
           </Button>
         </div>
         <div className="relative z-10">
