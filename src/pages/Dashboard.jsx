@@ -68,7 +68,7 @@ export default function Dashboard() {
   }).slice(0, 5) || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 bg-cover bg-center bg-fixed" style={{backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6984dc825e7d995631e3cbc6/3b7a27f55_hf_20260206_223755_110d6f73-a0bc-4eee-8233-bd223d17a8a6.png)'}}>
+    <div className="min-h-screen">
       {/* Countdown Clock - Top */}
       <div className="sticky top-0 z-50">
         <CountdownClock />
