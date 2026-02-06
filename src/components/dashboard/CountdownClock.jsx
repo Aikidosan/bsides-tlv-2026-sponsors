@@ -110,7 +110,7 @@ export default function CountdownClock() {
           </div>
 
           <div className="mt-6 flex items-center justify-center gap-2 text-white/90">
-            <Clock className="w-4 h-4" />
+            <Calendar className="w-4 h-4" />
             <p className="text-sm">June 2026 • Tel Aviv</p>
           </div>
         </div>
