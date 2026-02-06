@@ -225,7 +225,7 @@ export default function Sponsors() {
             </Link>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-2xl md:text-3xl font-bold text-green-500">Sponsor Pipeline</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-purple-600">Sponsor Pipeline</h1>
                 <span className="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full text-xs md:text-sm font-semibold whitespace-nowrap">
                   {filteredAndSortedCompanies.length} {filteredAndSortedCompanies.length === 1 ? 'company' : 'companies'}
                 </span>
