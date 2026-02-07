@@ -1,12 +1,29 @@
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import TimeTracker from './components/TimeTracker';
+import { useEffect } from 'react';
 
 export default function Layout({ children, currentPageName }) {
-  const { data: user } = useQuery({
+  const { data: user, isLoading } = useQuery({
     queryKey: ['user'],
     queryFn: () => base44.auth.me(),
   });
+
+  // Redirect to verification if user is not verified
+  useEffect(() => {
+    if (!isLoading && user && !user.linkedin_verified && currentPageName !== 'LinkedInVerification') {
+      window.location.href = '/LinkedInVerification';
+    }
+  }, [user, isLoading, currentPageName]);
+
+  // Show loading or verification check
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (user && !user.linkedin_verified && currentPageName !== 'LinkedInVerification') {
+    return <div className="min-h-screen flex items-center justify-center">Redirecting to verification...</div>;
+  }
 
   return (
     <div 

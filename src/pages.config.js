@@ -59,6 +59,7 @@ import OutreachTracker from './pages/OutreachTracker';
 import Sponsors from './pages/Sponsors';
 import Tasks from './pages/Tasks';
 import TeamCalendar from './pages/TeamCalendar';
+import LinkedInVerification from './pages/LinkedInVerification';
 import __Layout from './Layout.jsx';
 
 
@@ -75,6 +76,7 @@ export const PAGES = {
     "Sponsors": Sponsors,
     "Tasks": Tasks,
     "TeamCalendar": TeamCalendar,
+    "LinkedInVerification": LinkedInVerification,
 }
 
 export const pagesConfig = {
