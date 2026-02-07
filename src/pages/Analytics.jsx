@@ -65,7 +65,7 @@ export default function Analytics() {
             </Link>
             <div className="bg-white/80 backdrop-blur-sm p-4 rounded-lg">
               <h1 className="text-3xl font-bold">Sponsor Analytics</h1>
-              <p className="text-gray-600">Performance insights and key metrics</p>
+              <p className="text-black font-bold">Performance insights and key metrics</p>
             </div>
           </div>
         </div>
