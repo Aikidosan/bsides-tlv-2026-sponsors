@@ -11,6 +11,7 @@ export default function CountdownClock() {
     const saved = localStorage.getItem('countdownClockExpanded');
     return saved === null ? true : saved === 'true';
   });
+  const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -33,6 +34,24 @@ export default function CountdownClock() {
 
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY && currentScrollY > 50 && isExpanded) {
+        // Scrolling down
+        setIsExpanded(false);
+        localStorage.setItem('countdownClockExpanded', 'false');
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY, isExpanded]);
 
 
 
