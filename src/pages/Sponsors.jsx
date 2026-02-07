@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, ArrowLeft, Linkedin, Loader2, ArrowUpDown, Map, Sparkles } from 'lucide-react';
+import { Plus, Search, ArrowLeft, Linkedin, Loader2, ArrowUpDown, Map, Sparkles, GraduationCap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import CompanyCard from '../components/sponsors/CompanyCard';
@@ -236,6 +236,23 @@ export default function Sponsors() {
             </div>
           </div>
           <div className="flex flex-wrap gap-2">
+            <Button 
+              onClick={async () => {
+                try {
+                  const response = await base44.functions.invoke('findAllAlumni', {});
+                  alert(response.data.message);
+                  queryClient.invalidateQueries(['companies']);
+                } catch (error) {
+                  alert('Failed to find alumni connections: ' + error.message);
+                }
+              }}
+              variant="outline"
+              size="sm"
+              className="border-amber-300 text-amber-700 hover:bg-amber-50"
+            >
+              <GraduationCap className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:inline">Find All Alumni</span>
+            </Button>
             <Button 
               onClick={handleBulkDecisionMakers}
               variant="outline"
