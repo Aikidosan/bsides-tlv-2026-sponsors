@@ -63,7 +63,7 @@ export default function Analytics() {
                 <ArrowLeft className="w-7 h-7 font-bold" strokeWidth={3} />
               </Button>
             </Link>
-            <div>
+            <div className="bg-white/80 backdrop-blur-sm p-4 rounded-lg">
               <h1 className="text-3xl font-bold">Sponsor Analytics</h1>
               <p className="text-gray-600">Performance insights and key metrics</p>
             </div>
