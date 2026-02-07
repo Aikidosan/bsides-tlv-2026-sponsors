@@ -219,8 +219,8 @@ export default function Sponsors() {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-4">
             <Link to={createPageUrl('Dashboard')}>
-              <Button variant="ghost" size="icon" className="shrink-0">
-                <ArrowLeft className="w-5 h-5" />
+              <Button variant="ghost" size="icon" className="shrink-0 bg-white/80 backdrop-blur-sm hover:bg-white/90 w-12 h-12">
+                <ArrowLeft className="w-7 h-7 font-bold" strokeWidth={3} />
               </Button>
             </Link>
             <div className="flex-1 min-w-0">
