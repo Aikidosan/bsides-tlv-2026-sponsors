@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar, CalendarDays, BarChart3, Edit, Users, LogOut, User } from 'lucide-react';
+import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar, CalendarDays, BarChart3, Edit, Users, LogOut, User, GraduationCap, Loader2 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import FundraisingProgress from '../components/dashboard/FundraisingProgress';
 import TasksOverview from '../components/dashboard/TasksOverview';
@@ -16,6 +16,7 @@ import { format } from 'date-fns';
 export default function Dashboard() {
   const queryClient = useQueryClient();
   const [editingTask, setEditingTask] = useState(null);
+  const [isFindingAlumni, setIsFindingAlumni] = useState(false);
 
   const { data: user } = useQuery({
     queryKey: ['user'],
@@ -56,6 +57,19 @@ export default function Dashboard() {
       id: task.id,
       data: { ...task, assigned_to: user.email }
     });
+  };
+
+  const handleFindAllAlumni = async () => {
+    setIsFindingAlumni(true);
+    try {
+      const response = await base44.functions.invoke('findAllAlumni', {});
+      alert(response.data.message);
+      queryClient.invalidateQueries(['companies']);
+    } catch (error) {
+      alert('Failed to find alumni connections: ' + error.message);
+    } finally {
+      setIsFindingAlumni(false);
+    }
   };
 
   const upcomingTasks = tasks?.filter(t => {
@@ -107,6 +121,23 @@ export default function Dashboard() {
               <p className="text-gray-600 mt-1">Fundraising & Event Planning Dashboard</p>
             </div>
             <div className="flex flex-wrap gap-2">
+              <Button 
+                onClick={handleFindAllAlumni}
+                disabled={isFindingAlumni}
+                className="bg-amber-600 hover:bg-amber-700"
+              >
+                {isFindingAlumni ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Finding Alumni...
+                  </>
+                ) : (
+                  <>
+                    <GraduationCap className="w-4 h-4 mr-2" />
+                    Find All Alumni
+                  </>
+                )}
+              </Button>
               <Link to={createPageUrl('Sponsors')}>
                 <Button className="bg-indigo-600 hover:bg-indigo-700">
                   <Building2 className="w-4 h-4 mr-2" />

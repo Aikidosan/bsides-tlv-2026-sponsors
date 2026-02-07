@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Building2, Mail, Phone, Linkedin, ExternalLink, Calendar, Sparkles, Loader2, Users, TrendingUp, DollarSign, UserPlus, Globe, Lock, X } from "lucide-react";
+import { Building2, Mail, Phone, Linkedin, ExternalLink, Calendar, Sparkles, Loader2, Users, TrendingUp, DollarSign, UserPlus, Globe, Lock, X, GraduationCap } from "lucide-react";
 import { format } from "date-fns";
 import { base44 } from '@/api/base44Client';
 import AddContactDialog from './AddContactDialog';
@@ -121,9 +121,13 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
     }
   };
 
+  const hasAlumniConnection = company.alumni_connections && company.alumni_connections.length > 0;
+
   return (
     <Card 
-      className="hover:shadow-lg transition-all cursor-pointer border-l-4 border-l-indigo-500"
+      className={`hover:shadow-lg transition-all cursor-pointer border-l-4 ${
+        hasAlumniConnection ? 'border-l-amber-500 bg-amber-50/30' : 'border-l-indigo-500'
+      }`}
       onClick={onClick}
     >
       <CardHeader className="pb-3">
@@ -147,6 +151,12 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
               {company.profile_type === 'public' && company.stock_symbol && (
                 <Badge variant="outline" className="text-xs font-semibold">
                   {company.stock_symbol}
+                </Badge>
+              )}
+              {hasAlumniConnection && (
+                <Badge className="bg-amber-500 text-white text-xs flex items-center gap-1">
+                  <GraduationCap className="w-3 h-3" />
+                  Warm Lead
                 </Badge>
               )}
             </div>
@@ -347,6 +357,24 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
           <div className="flex items-center gap-1 text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded">
             <Calendar className="w-3 h-3" />
             <span>Follow-up: {format(new Date(company.next_followup_date), 'MMM d, yyyy')}</span>
+          </div>
+        )}
+
+        {hasAlumniConnection && (
+          <div className="space-y-2 mt-3 pt-3 border-t border-amber-200 bg-amber-50 -mx-4 px-4 py-3">
+            <div className="flex items-center gap-1 text-xs font-semibold text-amber-900">
+              <GraduationCap className="w-4 h-4" />
+              <span>Alumni Connections - Warm Call Opportunity</span>
+            </div>
+            {company.alumni_connections.map((connection, idx) => (
+              <div key={idx} className="text-xs space-y-0.5 bg-white rounded-lg p-2">
+                <p className="font-medium text-amber-900">{connection.team_member_name}</p>
+                <p className="text-amber-700">{connection.connection_type}</p>
+                {connection.notes && (
+                  <p className="text-amber-600 italic">{connection.notes}</p>
+                )}
+              </div>
+            ))}
           </div>
         )}
 

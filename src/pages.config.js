@@ -49,6 +49,7 @@
  */
 import AIResearch from './pages/AIResearch';
 import ActivityLog from './pages/ActivityLog';
+import AdminTimeTracking from './pages/AdminTimeTracking';
 import AdminUsers from './pages/AdminUsers';
 import Analytics from './pages/Analytics';
 import CEOOutreach from './pages/CEOOutreach';
@@ -58,13 +59,13 @@ import OutreachTracker from './pages/OutreachTracker';
 import Sponsors from './pages/Sponsors';
 import Tasks from './pages/Tasks';
 import TeamCalendar from './pages/TeamCalendar';
-import AdminTimeTracking from './pages/AdminTimeTracking';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AIResearch": AIResearch,
     "ActivityLog": ActivityLog,
+    "AdminTimeTracking": AdminTimeTracking,
     "AdminUsers": AdminUsers,
     "Analytics": Analytics,
     "CEOOutreach": CEOOutreach,
@@ -74,7 +75,6 @@ export const PAGES = {
     "Sponsors": Sponsors,
     "Tasks": Tasks,
     "TeamCalendar": TeamCalendar,
-    "AdminTimeTracking": AdminTimeTracking,
 }
 
 export const pagesConfig = {
