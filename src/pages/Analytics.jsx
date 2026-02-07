@@ -26,7 +26,7 @@ export default function Analytics() {
 
   if (loadingCompanies || loadingTouches) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <p className="text-gray-500">Loading analytics...</p>
       </div>
     );
@@ -53,14 +53,14 @@ export default function Analytics() {
   }, {}) || {};
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link to={createPageUrl('Dashboard')}>
-              <Button variant="ghost" size="icon">
-                <ArrowLeft className="w-5 h-5" />
+              <Button variant="ghost" size="icon" className="bg-white/80 backdrop-blur-sm hover:bg-white/90 w-12 h-12">
+                <ArrowLeft className="w-7 h-7 font-bold" strokeWidth={3} />
               </Button>
             </Link>
             <div>
