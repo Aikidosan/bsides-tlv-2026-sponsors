@@ -167,6 +167,12 @@ export default function Dashboard() {
                   Activity Log
                 </Button>
               </Link>
+              <Link to={createPageUrl('AdminTimeTracking')}>
+                <Button variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-50">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Time Tracking
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
