@@ -54,12 +54,12 @@ import AdminUsers from './pages/AdminUsers';
 import Analytics from './pages/Analytics';
 import CEOOutreach from './pages/CEOOutreach';
 import Dashboard from './pages/Dashboard';
+import LinkedInVerification from './pages/LinkedInVerification';
 import Messages from './pages/Messages';
 import OutreachTracker from './pages/OutreachTracker';
 import Sponsors from './pages/Sponsors';
 import Tasks from './pages/Tasks';
 import TeamCalendar from './pages/TeamCalendar';
-import LinkedInVerification from './pages/LinkedInVerification';
 import __Layout from './Layout.jsx';
 
 
@@ -71,12 +71,12 @@ export const PAGES = {
     "Analytics": Analytics,
     "CEOOutreach": CEOOutreach,
     "Dashboard": Dashboard,
+    "LinkedInVerification": LinkedInVerification,
     "Messages": Messages,
     "OutreachTracker": OutreachTracker,
     "Sponsors": Sponsors,
     "Tasks": Tasks,
     "TeamCalendar": TeamCalendar,
-    "LinkedInVerification": LinkedInVerification,
 }
 
 export const pagesConfig = {
