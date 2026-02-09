@@ -37,6 +37,7 @@ Deno.serve(async (req) => {
         - size: Company size - one of: startup, small, medium, large, enterprise (based on employee count)
         - founded_year: Year the company was founded
         - headquarters: Company headquarters location (city, country)
+        - israel_address: Full street address of the Israeli office (if the company has an Israeli presence)
         - funding_raised: Total funding raised in USD (if available)
         - valuation: Latest valuation in USD (if available)
         - latest_funding_date: Date of latest funding round
@@ -54,6 +55,7 @@ Deno.serve(async (req) => {
                     size: { type: ["string", "null"], enum: ["startup", "small", "medium", "large", "enterprise", null] },
                     founded_year: { type: ["number", "null"] },
                     headquarters: { type: ["string", "null"] },
+                    israel_address: { type: ["string", "null"] },
                     funding_raised: { type: ["number", "null"] },
                     valuation: { type: ["number", "null"] },
                     latest_funding_date: { type: ["string", "null"] },
@@ -82,6 +84,7 @@ Deno.serve(async (req) => {
          if (response.industry && !existingCompany?.industry) updateData.industry = response.industry;
          if (response.size && !existingCompany?.size) updateData.size = response.size;
          if (response.headquarters && !existingCompany?.headquarters) updateData.headquarters = response.headquarters;
+         if (response.israel_address && !existingCompany?.israel_address) updateData.israel_address = response.israel_address;
          if (response.funding_raised && !existingCompany?.funding_raised) updateData.funding_raised = response.funding_raised;
          if (response.valuation && !existingCompany?.valuation) updateData.valuation = response.valuation;
          if (response.investor_count && !existingCompany?.investor_count) updateData.investor_count = response.investor_count;
