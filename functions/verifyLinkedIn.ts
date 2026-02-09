@@ -39,11 +39,18 @@ Deno.serve(async (req) => {
                 .replace(/^www\./, '')
                 .replace(/\/$/, '');
             
-            return normalizedInput.includes(normalizedAllowed) || 
-                   normalizedAllowed.includes(normalizedInput);
+            return normalizedInput === normalizedAllowed;
         });
 
         if (!matchedProfile) {
+            console.log('No match found for:', normalizedInput);
+            console.log('Allowed profiles:', ALLOWED_PROFILES.map(p => {
+                const norm = p.url.toLowerCase()
+                    .replace(/^https?:\/\//, '')
+                    .replace(/^www\./, '')
+                    .replace(/\/$/, '');
+                return norm;
+            }));
             return Response.json({ 
                 verified: false, 
                 message: 'This LinkedIn profile is not authorized to access the app. Please contact the admin.' 
