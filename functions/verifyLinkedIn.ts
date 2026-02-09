@@ -52,9 +52,11 @@ Deno.serve(async (req) => {
 
         // Update user with verified LinkedIn profile and role
         await base44.asServiceRole.entities.User.update(user.id, {
-            linkedin_profile: linkedin_url,
-            linkedin_verified: true,
-            role: matchedProfile.role
+            role: matchedProfile.role,
+            data: {
+                linkedin_profile: linkedin_url,
+                linkedin_verified: true
+            }
         });
 
         return Response.json({ 
