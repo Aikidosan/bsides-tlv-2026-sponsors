@@ -25,8 +25,16 @@ export default function LinkedInVerification() {
 
   const verifyMutation = useMutation({
     mutationFn: async (url) => {
-      const response = await base44.functions.invoke('verifyLinkedIn', { linkedin_url: url });
-      return response.data;
+      try {
+        const response = await base44.functions.invoke('verifyLinkedIn', { linkedin_url: url });
+        return response.data;
+      } catch (error) {
+        // If the backend returned an error response with data, extract it
+        if (error.response?.data) {
+          throw new Error(error.response.data.message || 'Verification failed');
+        }
+        throw error;
+      }
     },
     onSuccess: (data) => {
       if (data.verified) {
