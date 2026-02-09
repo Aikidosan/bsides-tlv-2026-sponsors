@@ -104,6 +104,10 @@ export default function Dashboard() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
+                      <DropdownMenuItem onClick={() => window.location.href = createPageUrl('UserProfile')}>
+                        <User className="w-4 h-4 mr-2" />
+                        My Profile
+                      </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => base44.auth.logout()}>
                         <LogOut className="w-4 h-4 mr-2" />
                         Logout
