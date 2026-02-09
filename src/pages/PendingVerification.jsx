@@ -120,30 +120,38 @@ export default function PendingVerification() {
                           Registered: {format(new Date(user.created_date), 'MMM d, yyyy h:mm a')}
                         </p>
                       </div>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          className="bg-green-600 hover:bg-green-700"
-                          onClick={() => approveUserMutation.mutate(user.id)}
-                          disabled={approveUserMutation.isPending}
-                        >
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          Approve
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-red-300 text-red-700 hover:bg-red-50"
-                          onClick={() => {
-                            if (confirm(`Delete user ${user.email}? This cannot be undone.`)) {
-                              rejectUserMutation.mutate(user.id);
-                            }
-                          }}
-                          disabled={rejectUserMutation.isPending}
-                        >
-                          <XCircle className="w-4 h-4 mr-1" />
-                          Reject
-                        </Button>
+                      <div className="flex gap-2 shrink-0">
+                       <Button
+                         size="sm"
+                         type="button"
+                         className="bg-green-600 hover:bg-green-700 text-white"
+                         onClick={(e) => {
+                           e.preventDefault();
+                           e.stopPropagation();
+                           approveUserMutation.mutate(user.id);
+                         }}
+                         disabled={approveUserMutation.isPending || rejectUserMutation.isPending}
+                       >
+                         <CheckCircle className="w-4 h-4 mr-1" />
+                         {approveUserMutation.isPending ? 'Approving...' : 'Approve'}
+                       </Button>
+                       <Button
+                         size="sm"
+                         type="button"
+                         variant="outline"
+                         className="border-red-300 text-red-700 hover:bg-red-50"
+                         onClick={(e) => {
+                           e.preventDefault();
+                           e.stopPropagation();
+                           if (window.confirm(`Delete user ${user.email}? This cannot be undone.`)) {
+                             rejectUserMutation.mutate(user.id);
+                           }
+                         }}
+                         disabled={approveUserMutation.isPending || rejectUserMutation.isPending}
+                       >
+                         <XCircle className="w-4 h-4 mr-1" />
+                         {rejectUserMutation.isPending ? 'Rejecting...' : 'Reject'}
+                       </Button>
                       </div>
                     </div>
                   </div>
