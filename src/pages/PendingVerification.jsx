@@ -24,12 +24,17 @@ export default function PendingVerification() {
 
   const approveUserMutation = useMutation({
     mutationFn: async (userId) => {
+      const user = allUsers?.find(u => u.id === userId);
       await base44.asServiceRole.entities.User.update(userId, {
-        data: { linkedin_verified: true }
+        data: { 
+          ...user?.data,
+          linkedin_verified: true 
+        }
       });
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['allUsers']);
+      queryClient.invalidateQueries(['user']);
     },
   });
 
@@ -39,6 +44,7 @@ export default function PendingVerification() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['allUsers']);
+      queryClient.invalidateQueries(['user']);
     },
   });
 
@@ -75,6 +81,16 @@ export default function PendingVerification() {
         </div>
 
         {/* Pending Users */}
+        {!isLoading && pendingUsers.length === 0 && (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <CheckCircle className="w-12 h-12 mx-auto text-green-600 mb-3" />
+              <p className="text-gray-600 font-medium">No pending verifications</p>
+              <p className="text-sm text-gray-500 mt-1">All users have been verified</p>
+            </CardContent>
+          </Card>
+        )}
+
         {pendingUsers.length > 0 && (
           <Card>
             <CardHeader>
@@ -170,15 +186,9 @@ export default function PendingVerification() {
         )}
 
         {isLoading && (
-          <div className="text-center py-12">
-            <p className="text-gray-600">Loading users...</p>
-          </div>
-        )}
-
-        {!isLoading && allUsers?.length === 0 && (
           <Card>
             <CardContent className="py-12 text-center">
-              <p className="text-gray-600">No users found</p>
+              <p className="text-gray-600">Loading users...</p>
             </CardContent>
           </Card>
         )}
