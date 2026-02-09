@@ -4,7 +4,8 @@ const ALLOWED_PROFILES = [
   { url: 'linkedin.com/in/ariel-mitiushkin', role: 'admin' },
   { url: 'https://www.linkedin.com/in/guy-desau/', role: 'user' },
   { url: 'https://www.linkedin.com/in/kerenlerner/', role: 'user' },
-  { url: 'https://www.linkedin.com/in/avital-aviv-a778b01b2/', role: 'user' }
+  { url: 'https://www.linkedin.com/in/avital-aviv-a778b01b2/', role: 'user' },
+  { url: 'https://www.linkedin.com/in/edenkatz5/', role: 'user' }
 ];
 
 Deno.serve(async (req) => {
