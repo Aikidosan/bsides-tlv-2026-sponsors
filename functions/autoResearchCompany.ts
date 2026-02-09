@@ -68,7 +68,8 @@ Deno.serve(async (req) => {
                             properties: {
                                 name: { type: "string" },
                                 title: { type: "string" },
-                                linkedin_url: { type: ["string", "null"] }
+                                linkedin_url: { type: ["string", "null"] },
+                                country: { type: ["string", "null"] }
                             }
                         }
                     }

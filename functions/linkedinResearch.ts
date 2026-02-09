@@ -30,6 +30,7 @@ Deno.serve(async (req) => {
             - Full name
             - Current job title at this company
             - LinkedIn profile URL (if available)
+            - Country where they are based (e.g., "Israel", "USA", "UK", etc.)
             
             Focus on executives and senior management who handle marketing, sponsorships, partnerships, or community engagement.`,
             add_context_from_internet: true,
@@ -43,7 +44,8 @@ Deno.serve(async (req) => {
                             properties: {
                                 name: { type: "string" },
                                 title: { type: "string" },
-                                linkedin_url: { type: "string" }
+                                linkedin_url: { type: "string" },
+                                country: { type: "string" }
                             }
                         }
                     }
