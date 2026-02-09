@@ -132,14 +132,16 @@ export default function Dashboard() {
               <p className="text-gray-600 mt-1">Fundraising & Event Planning Dashboard</p>
             </div>
             <div className="flex flex-wrap gap-2">
-              {user?.role === 'admin' && pendingRequests.length > 0 && (
+              {user?.role === 'admin' && (
                 <Link to={createPageUrl('PendingVerification')}>
                   <Button className="bg-red-600 hover:bg-red-700 relative">
                     <Bell className="w-4 h-4 mr-2" />
                     Pending Verification
-                    <span className="absolute -top-1 -right-1 bg-white text-red-600 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-red-600">
-                      {pendingRequests.length}
-                    </span>
+                    {pendingRequests.length > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-white text-red-600 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-red-600">
+                        {pendingRequests.length}
+                      </span>
+                    )}
                   </Button>
                 </Link>
               )}
