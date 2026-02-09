@@ -64,6 +64,53 @@ export default function LinkedInVerification() {
     verifyMutation.mutate(linkedinUrl);
   };
 
+  // If not logged in, show login prompt first
+  if (!user && !userLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center p-6">
+        <Card className="max-w-md w-full">
+          <CardHeader>
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center">
+                <Linkedin className="w-10 h-10 text-white" />
+              </div>
+            </div>
+            <CardTitle className="text-center text-2xl">LinkedIn Verification Required</CardTitle>
+            <p className="text-center text-gray-600 mt-2">
+              BSides TLV 2026 requires LinkedIn verification
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
+              <p className="text-sm text-blue-900 mb-4">
+                To verify your LinkedIn profile, please sign in first
+              </p>
+              <Button
+                onClick={() => base44.auth.redirectToLogin(window.location.href)}
+                className="w-full bg-indigo-600 hover:bg-indigo-700"
+              >
+                Sign In to Continue
+              </Button>
+            </div>
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+              <p className="text-xs text-gray-600 text-center">
+                After signing in, you'll verify your LinkedIn profile to access the app
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (userLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex items-center justify-center p-6">
       <Card className="max-w-md w-full">
