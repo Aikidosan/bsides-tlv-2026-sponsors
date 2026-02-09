@@ -43,10 +43,12 @@ export default function Dashboard() {
     queryFn: () => base44.entities.User.list(),
   });
 
-  const { data: pendingRequests } = useQuery({
-    queryKey: ['pendingAccessRequests'],
-    queryFn: () => base44.entities.AccessRequest.filter({ status: 'pending' }),
+  const { data: allUsers } = useQuery({
+    queryKey: ['allUsers'],
+    queryFn: () => base44.entities.User.list(),
   });
+
+  const pendingRequests = allUsers?.filter(u => !u.data?.linkedin_verified) || [];
 
   const updateTaskMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Task.update(id, data),
@@ -130,11 +132,11 @@ export default function Dashboard() {
               <p className="text-gray-600 mt-1">Fundraising & Event Planning Dashboard</p>
             </div>
             <div className="flex flex-wrap gap-2">
-              {user?.role === 'admin' && pendingRequests && pendingRequests.length > 0 && (
-                <Link to={createPageUrl('AccessRequests')}>
+              {user?.role === 'admin' && pendingRequests.length > 0 && (
+                <Link to={createPageUrl('PendingVerification')}>
                   <Button className="bg-red-600 hover:bg-red-700 relative">
                     <Bell className="w-4 h-4 mr-2" />
-                    Access Requests
+                    Pending Verification
                     <span className="absolute -top-1 -right-1 bg-white text-red-600 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-red-600">
                       {pendingRequests.length}
                     </span>

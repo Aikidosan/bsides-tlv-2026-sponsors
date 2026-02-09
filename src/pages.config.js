@@ -62,6 +62,7 @@ import Tasks from './pages/Tasks';
 import TeamCalendar from './pages/TeamCalendar';
 import UserProfile from './pages/UserProfile';
 import AccessRequests from './pages/AccessRequests';
+import PendingVerification from './pages/PendingVerification';
 import __Layout from './Layout.jsx';
 
 
@@ -81,6 +82,7 @@ export const PAGES = {
     "TeamCalendar": TeamCalendar,
     "UserProfile": UserProfile,
     "AccessRequests": AccessRequests,
+    "PendingVerification": PendingVerification,
 }
 
 export const pagesConfig = {
