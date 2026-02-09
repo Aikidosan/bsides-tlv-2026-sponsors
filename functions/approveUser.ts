@@ -16,7 +16,12 @@ Deno.serve(async (req) => {
         }
 
         // Get the user to approve
-        const targetUser = await base44.asServiceRole.entities.User.get(userId);
+        const users = await base44.asServiceRole.entities.User.filter({ id: userId });
+        if (!users || users.length === 0) {
+            return Response.json({ error: 'User not found' }, { status: 404 });
+        }
+        
+        const targetUser = users[0];
         
         // Update with verified status
         await base44.asServiceRole.entities.User.update(userId, {
