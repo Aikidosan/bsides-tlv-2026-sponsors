@@ -4,7 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar, CalendarDays, BarChart3, Edit, Users, LogOut, User, GraduationCap, Loader2 } from 'lucide-react';
+import { Building2, CheckSquare, MessageSquare, Sparkles, Calendar, CalendarDays, BarChart3, Edit, Users, LogOut, User, GraduationCap, Loader2, Bell } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import FundraisingProgress from '../components/dashboard/FundraisingProgress';
 import TasksOverview from '../components/dashboard/TasksOverview';
@@ -41,6 +41,11 @@ export default function Dashboard() {
   const { data: users } = useQuery({
     queryKey: ['users'],
     queryFn: () => base44.entities.User.list(),
+  });
+
+  const { data: pendingRequests } = useQuery({
+    queryKey: ['pendingAccessRequests'],
+    queryFn: () => base44.entities.AccessRequest.filter({ status: 'pending' }),
   });
 
   const updateTaskMutation = useMutation({
@@ -125,6 +130,17 @@ export default function Dashboard() {
               <p className="text-gray-600 mt-1">Fundraising & Event Planning Dashboard</p>
             </div>
             <div className="flex flex-wrap gap-2">
+              {user?.role === 'admin' && pendingRequests && pendingRequests.length > 0 && (
+                <Link to={createPageUrl('AccessRequests')}>
+                  <Button className="bg-red-600 hover:bg-red-700 relative">
+                    <Bell className="w-4 h-4 mr-2" />
+                    Access Requests
+                    <span className="absolute -top-1 -right-1 bg-white text-red-600 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center border-2 border-red-600">
+                      {pendingRequests.length}
+                    </span>
+                  </Button>
+                </Link>
+              )}
               <Button 
                 onClick={handleFindAllAlumni}
                 disabled={isFindingAlumni}

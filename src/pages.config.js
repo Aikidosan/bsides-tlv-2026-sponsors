@@ -61,6 +61,7 @@ import Sponsors from './pages/Sponsors';
 import Tasks from './pages/Tasks';
 import TeamCalendar from './pages/TeamCalendar';
 import UserProfile from './pages/UserProfile';
+import AccessRequests from './pages/AccessRequests';
 import __Layout from './Layout.jsx';
 
 
@@ -79,6 +80,7 @@ export const PAGES = {
     "Tasks": Tasks,
     "TeamCalendar": TeamCalendar,
     "UserProfile": UserProfile,
+    "AccessRequests": AccessRequests,
 }
 
 export const pagesConfig = {
