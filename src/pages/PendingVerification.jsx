@@ -25,9 +25,10 @@ export default function PendingVerification() {
   const approveUserMutation = useMutation({
     mutationFn: async (userId) => {
       const user = allUsers?.find(u => u.id === userId);
+      const currentData = user?.data || {};
       await base44.asServiceRole.entities.User.update(userId, {
         data: { 
-          ...user?.data,
+          ...currentData,
           linkedin_verified: true 
         }
       });
@@ -35,6 +36,10 @@ export default function PendingVerification() {
     onSuccess: () => {
       queryClient.invalidateQueries(['allUsers']);
       queryClient.invalidateQueries(['user']);
+    },
+    onError: (error) => {
+      console.error('Approval error:', error);
+      alert('Failed to approve user: ' + error.message);
     },
   });
 

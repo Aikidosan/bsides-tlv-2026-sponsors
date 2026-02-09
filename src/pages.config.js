@@ -48,6 +48,7 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AIResearch from './pages/AIResearch';
+import AccessRequests from './pages/AccessRequests';
 import ActivityLog from './pages/ActivityLog';
 import AdminTimeTracking from './pages/AdminTimeTracking';
 import AdminUsers from './pages/AdminUsers';
@@ -57,17 +58,17 @@ import Dashboard from './pages/Dashboard';
 import LinkedInVerification from './pages/LinkedInVerification';
 import Messages from './pages/Messages';
 import OutreachTracker from './pages/OutreachTracker';
+import PendingVerification from './pages/PendingVerification';
 import Sponsors from './pages/Sponsors';
 import Tasks from './pages/Tasks';
 import TeamCalendar from './pages/TeamCalendar';
 import UserProfile from './pages/UserProfile';
-import AccessRequests from './pages/AccessRequests';
-import PendingVerification from './pages/PendingVerification';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AIResearch": AIResearch,
+    "AccessRequests": AccessRequests,
     "ActivityLog": ActivityLog,
     "AdminTimeTracking": AdminTimeTracking,
     "AdminUsers": AdminUsers,
@@ -77,12 +78,11 @@ export const PAGES = {
     "LinkedInVerification": LinkedInVerification,
     "Messages": Messages,
     "OutreachTracker": OutreachTracker,
+    "PendingVerification": PendingVerification,
     "Sponsors": Sponsors,
     "Tasks": Tasks,
     "TeamCalendar": TeamCalendar,
     "UserProfile": UserProfile,
-    "AccessRequests": AccessRequests,
-    "PendingVerification": PendingVerification,
 }
 
 export const pagesConfig = {
