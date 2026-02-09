@@ -122,6 +122,9 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
   };
 
   const hasAlumniConnection = company.alumni_connections && company.alumni_connections.length > 0;
+  
+  // Determine lead owner from alumni connections if not set
+  const leadOwner = company.lead_owner || (hasAlumniConnection ? company.alumni_connections[0].team_member_name : null);
 
   return (
     <Card 
@@ -159,10 +162,10 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
                   Warm Lead
                 </Badge>
               )}
-              {company.lead_owner && (
+              {leadOwner && (
                 <Badge className="bg-indigo-500 text-white text-xs flex items-center gap-1">
                   <User className="w-3 h-3" />
-                  {company.lead_owner}
+                  {leadOwner}
                 </Badge>
               )}
             </div>
