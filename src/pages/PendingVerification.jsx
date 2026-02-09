@@ -24,14 +24,8 @@ export default function PendingVerification() {
 
   const approveUserMutation = useMutation({
     mutationFn: async (userId) => {
-      const user = allUsers?.find(u => u.id === userId);
-      const currentData = user?.data || {};
-      await base44.asServiceRole.entities.User.update(userId, {
-        data: { 
-          ...currentData,
-          linkedin_verified: true 
-        }
-      });
+      const response = await base44.functions.invoke('approveUser', { userId });
+      return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['allUsers']);
@@ -45,11 +39,16 @@ export default function PendingVerification() {
 
   const rejectUserMutation = useMutation({
     mutationFn: async (userId) => {
-      await base44.asServiceRole.entities.User.delete(userId);
+      const response = await base44.functions.invoke('rejectUser', { userId });
+      return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['allUsers']);
       queryClient.invalidateQueries(['user']);
+    },
+    onError: (error) => {
+      console.error('Rejection error:', error);
+      alert('Failed to reject user: ' + error.message);
     },
   });
 
