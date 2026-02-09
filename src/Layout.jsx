@@ -6,14 +6,24 @@ import { useEffect } from 'react';
 export default function Layout({ children, currentPageName }) {
   const { data: user, isLoading } = useQuery({
     queryKey: ['user'],
-    queryFn: () => base44.auth.me(),
+    queryFn: async () => {
+      try {
+        return await base44.auth.me();
+      } catch (error) {
+        // User not authenticated - redirect to login
+        if (currentPageName !== 'LinkedInVerification') {
+          base44.auth.redirectToLogin(window.location.pathname);
+        }
+        return null;
+      }
+    },
   });
 
   // Redirect to verification if user is not verified
   useEffect(() => {
     if (!isLoading && user && currentPageName !== 'LinkedInVerification') {
       // Strict check: if linkedin_verified is not explicitly true, redirect
-      if (user.linkedin_verified !== true) {
+      if (user.data?.linkedin_verified !== true) {
         window.location.href = '/LinkedInVerification';
       }
     }
@@ -24,8 +34,13 @@ export default function Layout({ children, currentPageName }) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
+  // If no user and not on verification page, show loading (will redirect)
+  if (!user && currentPageName !== 'LinkedInVerification') {
+    return <div className="min-h-screen flex items-center justify-center">Redirecting to login...</div>;
+  }
+
   // Strict verification check: only allow access if linkedin_verified is explicitly true
-  if (user && user.linkedin_verified !== true && currentPageName !== 'LinkedInVerification') {
+  if (user && user.data?.linkedin_verified !== true && currentPageName !== 'LinkedInVerification') {
     return <div className="min-h-screen flex items-center justify-center">Redirecting to verification...</div>;
   }
 
