@@ -9,45 +9,64 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // Team LinkedIn profiles to check
-        const teamProfiles = [
-            { name: 'Guy Desau', url: 'https://www.linkedin.com/in/guy-desau/' },
-            { name: 'Keren Lerner', url: 'https://www.linkedin.com/in/kerenlerner/' },
-            { name: 'Avital Aviv', url: 'https://www.linkedin.com/in/avital-aviv-a778b01b2/' },
-            { name: 'Ariel Mitiushkin', url: 'https://www.linkedin.com/in/ariel-mitiushkin' }
+        // Team members to check
+        const teamMembers = [
+            { name: 'Guy Desau', email: 'guy@example.com' },
+            { name: 'Keren Lerner', email: 'keren.tld@gmail.com' },
+            { name: 'Avital Aviv', email: 'avitalos6@gmail.com' },
+            { name: 'Ariel Mitiushkin', email: 'a.mitiushkin@gmail.com' }
         ];
 
         // Get all companies
         const companies = await base44.asServiceRole.entities.Company.list();
+        
+        // Get LinkedIn access token
+        const accessToken = await base44.asServiceRole.connectors.getAccessToken('linkedin');
 
         let totalConnectionsFound = 0;
         let companiesUpdated = 0;
 
-        // For each team member, fetch their LinkedIn profile and extract work history
-        for (const teamMember of teamProfiles) {
+        // Fetch LinkedIn connections
+        const connectionsResponse = await fetch('https://api.linkedin.com/v2/connections?q=viewer&start=0&count=500', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'X-Restli-Protocol-Version': '2.0.0'
+            }
+        });
+
+        if (!connectionsResponse.ok) {
+            throw new Error(`LinkedIn API error: ${connectionsResponse.status}`);
+        }
+
+        const connectionsData = await connectionsResponse.json();
+        const connections = connectionsData.elements || [];
+
+        // For each company, check if any LinkedIn connections work there
+        for (const company of companies) {
             try {
-                // Use AI to extract work history from LinkedIn profile
-                const profileData = await base44.integrations.Core.InvokeLLM({
-                    prompt: `Extract the work history from this LinkedIn profile: ${teamMember.url}
+                // Use AI to find which connections work at this company
+                const matchData = await base44.integrations.Core.InvokeLLM({
+                    prompt: `I have a list of LinkedIn connections and I want to find which ones work at "${company.name}".
                     
-                    Return a JSON array of companies this person has worked at, including:
-                    - company_name (exact company name)
-                    - role (job title)
-                    - duration (time period)
+                    Here are my connections (limited data): ${JSON.stringify(connections.slice(0, 100))}
                     
-                    Only include actual employment, not education or volunteer work.`,
+                    For the company "${company.name}", check LinkedIn to see which of these connections currently work there.
+                    Also check if any of these team members know people at ${company.name}: ${teamMembers.map(t => t.name).join(', ')}
+                    
+                    Return a list of people who work at this company and their connection to our team.`,
                     add_context_from_internet: true,
                     response_json_schema: {
                         type: 'object',
                         properties: {
-                            companies: {
+                            connections: {
                                 type: 'array',
                                 items: {
                                     type: 'object',
                                     properties: {
-                                        company_name: { type: 'string' },
-                                        role: { type: 'string' },
-                                        duration: { type: 'string' }
+                                        contact_name: { type: 'string' },
+                                        contact_role: { type: 'string' },
+                                        team_member: { type: 'string' },
+                                        connection_notes: { type: 'string' }
                                     }
                                 }
                             }
@@ -55,55 +74,53 @@ Deno.serve(async (req) => {
                     }
                 });
 
-                const workHistory = profileData.companies || [];
+                const foundConnections = matchData.connections || [];
 
-                // Match work history against sponsor companies
-                for (const company of companies) {
-                    const matchingWork = workHistory.find(work => 
-                        work.company_name.toLowerCase().includes(company.name.toLowerCase()) ||
-                        company.name.toLowerCase().includes(work.company_name.toLowerCase())
-                    );
-
-                    if (matchingWork) {
-                        // Get existing alumni connections or create new array
-                        const existingConnections = company.alumni_connections || [];
-                        
-                        // Check if this connection already exists
+                if (foundConnections.length > 0) {
+                    // Get existing alumni connections or create new array
+                    const existingConnections = company.alumni_connections || [];
+                    
+                    // Add new connections
+                    for (const conn of foundConnections) {
                         const alreadyExists = existingConnections.some(
-                            conn => conn.team_member_name === teamMember.name
+                            existing => existing.team_member_name === conn.team_member && 
+                                       existing.notes?.includes(conn.contact_name)
                         );
 
                         if (!alreadyExists) {
+                            const teamMember = teamMembers.find(t => t.name === conn.team_member);
                             existingConnections.push({
-                                team_member_name: teamMember.name,
-                                team_member_email: '', // Email not available from LinkedIn
-                                connection_type: `Former ${matchingWork.role}`,
-                                notes: `Worked at ${matchingWork.company_name} (${matchingWork.duration}). LinkedIn: ${teamMember.url}`
+                                team_member_name: conn.team_member || 'Network',
+                                team_member_email: teamMember?.email || '',
+                                connection_type: 'LinkedIn Connection',
+                                notes: `${conn.contact_name} - ${conn.contact_role}. ${conn.connection_notes || ''}`
                             });
-
-                            // Update company with new connection
-                            await base44.asServiceRole.entities.Company.update(company.id, {
-                                alumni_connections: existingConnections
-                            });
-
                             totalConnectionsFound++;
-                            companiesUpdated++;
                         }
+                    }
+
+                    // Update company with new connections
+                    if (existingConnections.length > (company.alumni_connections?.length || 0)) {
+                        await base44.asServiceRole.entities.Company.update(company.id, {
+                            alumni_connections: existingConnections
+                        });
+                        companiesUpdated++;
                     }
                 }
 
-                // Add small delay to avoid rate limits
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                // Small delay to avoid overwhelming the AI
+                await new Promise(resolve => setTimeout(resolve, 1000));
             } catch (error) {
-                console.error(`Failed to process ${teamMember.name}:`, error);
+                console.error(`Failed to process ${company.name}:`, error);
             }
         }
 
         return Response.json({
             success: true,
+            companies_checked: companies.length,
             companies_updated: companiesUpdated,
             total_connections_found: totalConnectionsFound,
-            message: `Found ${totalConnectionsFound} alumni connections across ${companiesUpdated} companies`
+            message: `Found ${totalConnectionsFound} connections across ${companiesUpdated} companies (checked ${companies.length} companies)`
         });
     } catch (error) {
         return Response.json({ error: error.message }, { status: 500 });
