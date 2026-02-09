@@ -22,6 +22,24 @@ export default function LinkedInVerification() {
     },
   });
 
+  const linkedinAuthMutation = useMutation({
+    mutationFn: async () => {
+      const response = await base44.functions.invoke('linkedinAuth', {});
+      return response.data;
+    },
+    onSuccess: (data) => {
+      if (data.verified) {
+        queryClient.invalidateQueries(['user']);
+        window.location.href = '/';
+      } else {
+        setError(data.message || 'LinkedIn profile not authorized for this app');
+      }
+    },
+    onError: (error) => {
+      setError(error.message || 'Authentication failed');
+    }
+  });
+
   const verifyMutation = useMutation({
     mutationFn: async (url) => {
       try {
@@ -86,6 +104,33 @@ export default function LinkedInVerification() {
             </div>
           )}
 
+          <Button
+            onClick={() => linkedinAuthMutation.mutate()}
+            disabled={linkedinAuthMutation.isPending}
+            className="w-full bg-[#0A66C2] hover:bg-[#004182]"
+          >
+            {linkedinAuthMutation.isPending ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Verifying...
+              </>
+            ) : (
+              <>
+                <Linkedin className="w-5 h-5 mr-2" />
+                Continue with LinkedIn
+              </>
+            )}
+          </Button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-gray-200" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-2 text-gray-500">Or verify manually</span>
+            </div>
+          </div>
+
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">
               LinkedIn Profile URL
@@ -94,7 +139,7 @@ export default function LinkedInVerification() {
               placeholder="https://www.linkedin.com/in/your-profile"
               value={linkedinUrl}
               onChange={(e) => setLinkedinUrl(e.target.value)}
-              disabled={verifyMutation.isPending}
+              disabled={verifyMutation.isPending || linkedinAuthMutation.isPending}
             />
             <p className="text-xs text-gray-500">
               Enter your full LinkedIn profile URL (e.g., https://www.linkedin.com/in/username)
@@ -103,8 +148,9 @@ export default function LinkedInVerification() {
 
           <Button
             onClick={handleVerify}
-            disabled={verifyMutation.isPending}
-            className="w-full bg-indigo-600 hover:bg-indigo-700"
+            disabled={verifyMutation.isPending || linkedinAuthMutation.isPending}
+            variant="outline"
+            className="w-full"
           >
             {verifyMutation.isPending ? (
               <>
@@ -114,7 +160,7 @@ export default function LinkedInVerification() {
             ) : (
               <>
                 <CheckCircle className="w-4 h-4 mr-2" />
-                Verify LinkedIn
+                Verify Manually
               </>
             )}
           </Button>
