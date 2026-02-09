@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Building2, Mail, Phone, Linkedin, ExternalLink, Calendar, Sparkles, Loader2, Users, TrendingUp, DollarSign, UserPlus, Globe, Lock, X, GraduationCap } from "lucide-react";
+import { Building2, Mail, Phone, Linkedin, ExternalLink, Calendar, Sparkles, Loader2, Users, TrendingUp, DollarSign, UserPlus, Globe, Lock, X, GraduationCap, User } from "lucide-react";
 import { format } from "date-fns";
 import { base44 } from '@/api/base44Client';
 import AddContactDialog from './AddContactDialog';
@@ -157,6 +157,12 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
                 <Badge className="bg-amber-500 text-white text-xs flex items-center gap-1">
                   <GraduationCap className="w-3 h-3" />
                   Warm Lead
+                </Badge>
+              )}
+              {company.lead_owner && (
+                <Badge className="bg-indigo-500 text-white text-xs flex items-center gap-1">
+                  <User className="w-3 h-3" />
+                  {company.lead_owner}
                 </Badge>
               )}
             </div>
