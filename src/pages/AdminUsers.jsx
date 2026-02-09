@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Shield, User, Mail, ArrowLeft } from 'lucide-react';
+import { UserPlus, Shield, User, Mail, ArrowLeft, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
@@ -18,6 +18,11 @@ export default function AdminUsers() {
   const { data: users, isLoading } = useQuery({
     queryKey: ['users'],
     queryFn: () => base44.entities.User.list('-created_date'),
+  });
+
+  const { data: accessRequests } = useQuery({
+    queryKey: ['access-requests'],
+    queryFn: () => base44.entities.AccessRequest.filter({ status: 'pending' }, '-created_date'),
   });
 
   useQuery({
@@ -121,6 +126,51 @@ export default function AdminUsers() {
             </form>
           </CardContent>
         </Card>
+
+        {/* Pending Invitations */}
+        {accessRequests && accessRequests.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="w-5 h-5 text-orange-600" />
+                Pending Invitations ({accessRequests.length})
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {accessRequests.map((request) => (
+                  <div
+                    key={request.id}
+                    className="flex items-center justify-between p-4 border border-orange-200 bg-orange-50 rounded-lg"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 rounded-lg bg-orange-100">
+                        <Mail className="w-4 h-4 text-orange-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">{request.full_name || 'No name provided'}</p>
+                        <p className="text-sm text-gray-600 flex items-center gap-1">
+                          <Mail className="w-3 h-3" />
+                          {request.email}
+                        </p>
+                        {request.linkedin_profile && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            LinkedIn: {request.linkedin_profile}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700">
+                        Pending
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Users List */}
         <Card>
