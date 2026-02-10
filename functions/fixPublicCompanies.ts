@@ -29,18 +29,21 @@ Deno.serve(async (req) => {
 
         for (const company of companies) {
             const normalizedName = company.name.toLowerCase().trim();
-            const stockSymbol = publicCompanies[normalizedName];
-
-            if (stockSymbol && company.profile_type !== 'public') {
-                await base44.asServiceRole.entities.Company.update(company.id, {
-                    profile_type: 'public',
-                    stock_symbol: stockSymbol
-                });
-                updatedCount++;
-                updatedCompanies.push({
-                    name: company.name,
-                    stock_symbol: stockSymbol
-                });
+            
+            // Check if company name contains any of the public company names
+            for (const [publicName, stockSymbol] of Object.entries(publicCompanies)) {
+                if (normalizedName.includes(publicName) && company.profile_type !== 'public') {
+                    await base44.asServiceRole.entities.Company.update(company.id, {
+                        profile_type: 'public',
+                        stock_symbol: stockSymbol
+                    });
+                    updatedCount++;
+                    updatedCompanies.push({
+                        name: company.name,
+                        stock_symbol: stockSymbol
+                    });
+                    break; // Move to next company after finding a match
+                }
             }
         }
 
