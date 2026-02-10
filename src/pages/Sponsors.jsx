@@ -320,6 +320,25 @@ export default function Sponsors() {
               <span className="hidden md:inline">Import Israeli Companies</span>
             </Button>
             <Button 
+              onClick={async () => {
+                if (confirm('Remove all duplicate companies? This will keep the newest version of each.')) {
+                  try {
+                    const response = await base44.functions.invoke('removeDuplicateCompanies', {});
+                    alert(response.data.message);
+                    queryClient.invalidateQueries(['companies']);
+                  } catch (error) {
+                    alert('Failed to remove duplicates: ' + error.message);
+                  }
+                }
+              }}
+              variant="outline"
+              size="sm"
+              className="border-red-300 text-red-700 hover:bg-red-50"
+            >
+              <Plus className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:inline">Remove Duplicates</span>
+            </Button>
+            <Button 
               onClick={() => {
                 setSelectedCompany(null);
                 setShowDialog(true);
