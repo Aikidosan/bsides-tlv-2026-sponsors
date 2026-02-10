@@ -15,7 +15,8 @@ Deno.serve(async (req) => {
             { name: 'Keren Lerner', email: 'keren.tld@gmail.com' },
             { name: 'Avital Aviv', email: 'avitalos6@gmail.com' },
             { name: 'Ariel Mitiushkin', email: 'a.mitiushkin@gmail.com' },
-            { name: 'Reut Menashe', email: 'Reut@bsidestlv.com' }
+            { name: 'Reut Menashe', email: 'Reut@bsidestlv.com' },
+            { name: 'Gil Yankovitch', email: 'gil@bsidestlv.com' }
         ];
 
         // Get all companies
