@@ -23,9 +23,10 @@ Deno.serve(async (req) => {
             'sompo': 'SMPOF'
         };
 
-        const companies = await base44.asServiceRole.entities.Company.list();
+        const companies = await base44.asServiceRole.entities.Company.filter({});
         let updatedCount = 0;
         const updatedCompanies = [];
+        const updatePromises = [];
 
         for (const company of companies) {
             const normalizedName = company.name.toLowerCase().trim();
@@ -33,19 +34,25 @@ Deno.serve(async (req) => {
             // Check if company name contains any of the public company names
             for (const [publicName, stockSymbol] of Object.entries(publicCompanies)) {
                 if (normalizedName.includes(publicName) && company.profile_type !== 'public') {
-                    await base44.asServiceRole.entities.Company.update(company.id, {
-                        profile_type: 'public',
-                        stock_symbol: stockSymbol
-                    });
+                    updatePromises.push(
+                        base44.asServiceRole.entities.Company.update(company.id, {
+                            profile_type: 'public',
+                            stock_symbol: stockSymbol
+                        }).then(() => {
+                            updatedCompanies.push({
+                                name: company.name,
+                                stock_symbol: stockSymbol
+                            });
+                        })
+                    );
                     updatedCount++;
-                    updatedCompanies.push({
-                        name: company.name,
-                        stock_symbol: stockSymbol
-                    });
-                    break; // Move to next company after finding a match
+                    break;
                 }
             }
         }
+
+        // Execute all updates in parallel
+        await Promise.all(updatePromises);
 
         return Response.json({
             success: true,
