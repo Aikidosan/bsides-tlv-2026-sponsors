@@ -58,7 +58,7 @@ const yearColors = {
 
 export default function PastSponsorsBar({ companies, onCompanyClick }) {
   return (
-    <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 rounded-xl shadow-sm p-4 border border-indigo-200">
+    <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 rounded-xl shadow-sm p-4 border border-indigo-200 relative z-10">
       <div className="flex items-center gap-3 mb-3">
         <Building2 className="w-5 h-5 text-indigo-600" />
         <h3 className="font-bold text-lg text-gray-900">Past BSidesTLV Sponsors</h3>
