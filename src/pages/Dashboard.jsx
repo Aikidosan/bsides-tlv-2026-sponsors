@@ -272,7 +272,7 @@ export default function Dashboard() {
               <a href="https://docs.google.com/document/d/13wbZvo0AVYl2bqEgaAM2uMtKf0r2Mx48/edit" target="_blank" rel="noopener noreferrer">
                 <Button variant="outline" className="border-green-300 text-green-700 hover:bg-green-50">
                   <MessageSquare className="w-4 h-4 mr-2" />
-                  Google Doc
+                  Sponsorship Kit
                 </Button>
               </a>
             </div>
