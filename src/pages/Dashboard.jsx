@@ -68,10 +68,34 @@ export default function Dashboard() {
 
   const handleFindAllAlumni = async () => {
     setIsFindingAlumni(true);
+    const companiesList = companies || [];
+    let processed = 0;
+    let connectionsFound = 0;
+    
     try {
-      const response = await base44.functions.invoke('findAllAlumni', {});
-      alert(response.data.message);
+      for (const company of companiesList) {
+        try {
+          const response = await base44.functions.invoke('checkMyNetworkAtCompany', { 
+            company_id: company.id 
+          });
+          
+          processed++;
+          if (response.data.has_connections) {
+            connectionsFound += response.data.connections_found;
+          }
+          
+          // Update progress
+          console.log(`Checked ${processed}/${companiesList.length}: ${company.name}`);
+          
+          // Small delay between requests
+          await new Promise(resolve => setTimeout(resolve, 1500));
+        } catch (error) {
+          console.error(`Failed to check ${company.name}:`, error);
+        }
+      }
+      
       queryClient.invalidateQueries(['companies']);
+      alert(`✅ Checked ${processed} companies and found connections at ${connectionsFound} companies!`);
     } catch (error) {
       alert('Failed to find alumni connections: ' + error.message);
     } finally {
