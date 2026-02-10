@@ -20,7 +20,9 @@ export default function Sponsors() {
   const [isBulkDecisionMakers, setIsBulkDecisionMakers] = useState(false);
   const [sortBy, setSortBy] = useState('updated');
   const [viewMode, setViewMode] = useState('grid');
+  const [highlightedCompanyId, setHighlightedCompanyId] = useState(null);
   const queryClient = useQueryClient();
+  const companyRefs = React.useRef({});
 
   // Handle URL parameters for status filter
   useEffect(() => {
@@ -430,8 +432,13 @@ export default function Sponsors() {
         <PastSponsorsBar 
           companies={companies}
           onCompanyClick={(company) => {
-            setSelectedCompany(company);
-            setShowDialog(true);
+            // Scroll to the company card
+            const element = companyRefs.current[company.id];
+            if (element) {
+              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              setHighlightedCompanyId(company.id);
+              setTimeout(() => setHighlightedCompanyId(null), 2000);
+            }
           }}
         />
 
@@ -444,14 +451,21 @@ export default function Sponsors() {
           viewMode === 'grid' ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredAndSortedCompanies.map(company => (
-                <CompanyCard
+                <div
                   key={company.id}
-                  company={company}
-                  onClick={() => {
-                    setSelectedCompany(company);
-                    setShowDialog(true);
-                  }}
-                />
+                  ref={(el) => companyRefs.current[company.id] = el}
+                  className={`transition-all duration-500 ${
+                    highlightedCompanyId === company.id ? 'ring-4 ring-indigo-500 rounded-xl' : ''
+                  }`}
+                >
+                  <CompanyCard
+                    company={company}
+                    onClick={() => {
+                      setSelectedCompany(company);
+                      setShowDialog(true);
+                    }}
+                  />
+                </div>
               ))}
             </div>
           ) : (
