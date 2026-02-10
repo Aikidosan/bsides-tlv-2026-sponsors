@@ -432,13 +432,17 @@ export default function Sponsors() {
         <PastSponsorsBar 
           companies={companies}
           onCompanyClick={(company) => {
+            // Clear search to ensure company is visible
+            setSearchTerm('');
             // Scroll to the company card
-            const element = companyRefs.current[company.id];
-            if (element) {
-              element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              setHighlightedCompanyId(company.id);
-              setTimeout(() => setHighlightedCompanyId(null), 2000);
-            }
+            setTimeout(() => {
+              const element = companyRefs.current[company.id];
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setHighlightedCompanyId(company.id);
+                setTimeout(() => setHighlightedCompanyId(null), 2000);
+              }
+            }, 100);
           }}
         />
 
