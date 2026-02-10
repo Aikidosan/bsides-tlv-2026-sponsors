@@ -28,17 +28,43 @@ Deno.serve(async (req) => {
         let removedCount = 0;
         const removedCompanies = [];
 
-        // For each duplicate group, keep the newest one and delete the rest
+        // For each duplicate group, merge data and keep the most complete one
         for (const [name, group] of duplicateGroups) {
-            // Sort by created_date (newest first)
+            // Sort by updated_date (most recently updated first)
             const sorted = group.sort((a, b) => 
-                new Date(b.created_date) - new Date(a.created_date)
+                new Date(b.updated_date) - new Date(a.updated_date)
             );
 
-            // Keep the first (newest), delete the rest
-            const toKeep = sorted[0];
-            const toRemove = sorted.slice(1);
+            // Merge all data into the most complete record
+            const mergedData = {};
+            for (const company of sorted) {
+                for (const [key, value] of Object.entries(company)) {
+                    // Skip id, created_date, updated_date, created_by
+                    if (['id', 'created_date', 'updated_date', 'created_by'].includes(key)) continue;
+                    
+                    // Only set if not already set and value exists
+                    if (!mergedData[key] && value) {
+                        mergedData[key] = value;
+                    }
+                    
+                    // Special handling for arrays (like decision_makers, alumni_connections)
+                    if (Array.isArray(value) && value.length > 0) {
+                        if (!mergedData[key]) {
+                            mergedData[key] = value;
+                        } else if (Array.isArray(mergedData[key])) {
+                            // Merge arrays and remove duplicates
+                            mergedData[key] = [...mergedData[key], ...value];
+                        }
+                    }
+                }
+            }
 
+            // Update the first (most recent) company with merged data
+            const toKeep = sorted[0];
+            await base44.asServiceRole.entities.Company.update(toKeep.id, mergedData);
+
+            // Delete the rest
+            const toRemove = sorted.slice(1);
             for (const company of toRemove) {
                 await base44.asServiceRole.entities.Company.delete(company.id);
                 removedCount++;
