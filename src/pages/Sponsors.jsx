@@ -427,7 +427,13 @@ export default function Sponsors() {
         </div>
 
         {/* Past Sponsors Bar */}
-        <PastSponsorsBar />
+        <PastSponsorsBar 
+          companies={companies}
+          onCompanyClick={(company) => {
+            setSelectedCompany(company);
+            setShowDialog(true);
+          }}
+        />
 
         {/* Companies View */}
         {isLoading ? (

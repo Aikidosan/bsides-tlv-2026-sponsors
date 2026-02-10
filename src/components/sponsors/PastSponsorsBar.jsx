@@ -56,7 +56,7 @@ const yearColors = {
   "2020": "bg-amber-500 hover:bg-amber-600"
 };
 
-export default function PastSponsorsBar() {
+export default function PastSponsorsBar({ companies, onCompanyClick }) {
   return (
     <div className="bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 rounded-xl shadow-sm p-4 border border-indigo-200">
       <div className="flex items-center gap-3 mb-3">
@@ -70,15 +70,25 @@ export default function PastSponsorsBar() {
               {year}
             </div>
             <div className="flex flex-wrap gap-2 flex-1">
-              {sponsors.map((sponsor, idx) => (
-                <Badge
-                  key={idx}
-                  variant="outline"
-                  className="bg-white/80 backdrop-blur-sm border-gray-300 text-gray-700 hover:bg-white transition-colors"
-                >
-                  {sponsor.name}
-                </Badge>
-              ))}
+              {sponsors.map((sponsor, idx) => {
+                const company = companies?.find(c => 
+                  c.name.toLowerCase().includes(sponsor.name.toLowerCase()) || 
+                  sponsor.name.toLowerCase().includes(c.name.toLowerCase())
+                );
+                
+                return (
+                  <Badge
+                    key={idx}
+                    variant="outline"
+                    className={`bg-white/80 backdrop-blur-sm border-gray-300 text-gray-700 transition-colors ${
+                      company ? 'cursor-pointer hover:bg-indigo-50 hover:border-indigo-400' : 'hover:bg-white'
+                    }`}
+                    onClick={() => company && onCompanyClick(company)}
+                  >
+                    {sponsor.name}
+                  </Badge>
+                );
+              })}
             </div>
           </div>
         ))}
