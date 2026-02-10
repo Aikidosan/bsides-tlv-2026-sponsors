@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import CompanyCard from '../components/sponsors/CompanyCard';
 import CompanyDialog from '../components/sponsors/CompanyDialog';
+import PastSponsorsBar from '../components/sponsors/PastSponsorsBar';
 
 export default function Sponsors() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -424,6 +425,9 @@ export default function Sponsors() {
             </div>
           </div>
         </div>
+
+        {/* Past Sponsors Bar */}
+        <PastSponsorsBar />
 
         {/* Companies View */}
         {isLoading ? (
