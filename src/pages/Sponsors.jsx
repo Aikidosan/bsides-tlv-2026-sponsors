@@ -342,6 +342,23 @@ export default function Sponsors() {
               <span className="hidden md:inline">Remove Duplicates</span>
             </Button>
             <Button 
+              onClick={async () => {
+                try {
+                  const response = await base44.functions.invoke('fixPublicCompanies', {});
+                  alert(response.data.message);
+                  queryClient.invalidateQueries(['companies']);
+                } catch (error) {
+                  alert('Failed to fix public companies: ' + error.message);
+                }
+              }}
+              variant="outline"
+              size="sm"
+              className="border-blue-300 text-blue-700 hover:bg-blue-50"
+            >
+              <Plus className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:inline">Fix Public Companies</span>
+            </Button>
+            <Button 
               onClick={() => {
                 setSelectedCompany(null);
                 setShowDialog(true);
