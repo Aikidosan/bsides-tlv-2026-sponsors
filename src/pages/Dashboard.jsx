@@ -186,6 +186,22 @@ export default function Dashboard() {
                   </>
                 )}
               </Button>
+              <Button 
+                onClick={async () => {
+                  try {
+                    const response = await base44.functions.invoke('tagPastSponsors', {});
+                    alert(`Tagged ${response.data.updated_count} companies with past sponsor years!`);
+                    queryClient.invalidateQueries(['companies']);
+                  } catch (error) {
+                    alert('Failed to tag sponsors: ' + error.message);
+                  }
+                }}
+                variant="outline"
+                className="border-purple-300 text-purple-700 hover:bg-purple-50"
+              >
+                <Building2 className="w-4 h-4 mr-2" />
+                Tag Past Sponsors
+              </Button>
               <Link to={createPageUrl('Sponsors')}>
                 <Button className="bg-indigo-600 hover:bg-indigo-700">
                   <Building2 className="w-4 h-4 mr-2" />
