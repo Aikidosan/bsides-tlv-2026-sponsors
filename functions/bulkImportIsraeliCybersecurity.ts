@@ -100,13 +100,36 @@ Deno.serve(async (req) => {
             { name: 'CrowdStrike', industry: 'Endpoint Security', size: 'enterprise', profile_type: 'public', notes: 'Israeli operations' },
         ];
 
-        // Bulk create companies
-        const created = await base44.entities.Company.bulkCreate(companiesData);
+        // Get existing companies to avoid duplicates
+        const existingCompanies = await base44.asServiceRole.entities.Company.list();
+        const existingNames = new Set(existingCompanies.map(c => c.name.toLowerCase().trim()));
+
+        // Filter out duplicates
+        const newCompanies = companiesData.filter(company => 
+            !existingNames.has(company.name.toLowerCase().trim())
+        );
+
+        // Remove duplicates within the import list itself
+        const uniqueCompanies = [];
+        const seenNames = new Set();
+        for (const company of newCompanies) {
+            const normalizedName = company.name.toLowerCase().trim();
+            if (!seenNames.has(normalizedName)) {
+                seenNames.add(normalizedName);
+                uniqueCompanies.push(company);
+            }
+        }
+
+        // Bulk create only new companies
+        const created = uniqueCompanies.length > 0 
+            ? await base44.asServiceRole.entities.Company.bulkCreate(uniqueCompanies)
+            : [];
         
         return Response.json({ 
             success: true, 
             count: created.length,
-            message: `Successfully imported ${created.length} Israeli cybersecurity companies`
+            skipped: companiesData.length - uniqueCompanies.length,
+            message: `Successfully imported ${created.length} companies (${companiesData.length - uniqueCompanies.length} duplicates skipped)`
         });
     } catch (error) {
         return Response.json({ error: error.message }, { status: 500 });
