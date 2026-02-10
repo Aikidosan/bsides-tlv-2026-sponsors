@@ -26,6 +26,14 @@ const tierColors = {
   supporter: "bg-blue-500 text-white"
 };
 
+const yearColors = {
+  "2024": "bg-rose-500 text-white",
+  "2023": "bg-violet-500 text-white",
+  "2022": "bg-cyan-500 text-white",
+  "2021": "bg-emerald-500 text-white",
+  "2020": "bg-amber-500 text-white"
+};
+
 export default function CompanyCard({ company, onClick, onAIResearch }) {
   const [isResearching, setIsResearching] = useState(false);
   const [isFetchingFinancials, setIsFetchingFinancials] = useState(false);
@@ -177,6 +185,13 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
                 <Badge className={tierColors[company.sponsorship_tier]}>
                   {company.sponsorship_tier}
                 </Badge>
+              )}
+              {company.past_sponsor_years && company.past_sponsor_years.length > 0 && (
+                company.past_sponsor_years.map((year) => (
+                  <Badge key={year} className={yearColors[year] || "bg-gray-500 text-white"}>
+                    Sponsor {year}
+                  </Badge>
+                ))
               )}
             </div>
           </div>
