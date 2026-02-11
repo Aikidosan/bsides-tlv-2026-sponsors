@@ -207,7 +207,12 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
                 {company.market_cap && (
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-gray-600">Market Cap:</span>
-                    <span className="font-semibold text-gray-900">${(company.market_cap / 1000000000).toFixed(2)}B</span>
+                    <span className="font-semibold text-gray-900">
+                      {company.market_cap >= 1000000000 
+                        ? `$${(company.market_cap / 1000000000).toFixed(2)}B`
+                        : `$${(company.market_cap / 1000000).toFixed(0)}M`
+                      }
+                    </span>
                   </div>
                 )}
                 {company.stock_price && (
