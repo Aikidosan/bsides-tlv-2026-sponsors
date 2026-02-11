@@ -5,7 +5,9 @@ const ALLOWED_PROFILES = [
   { url: 'https://www.linkedin.com/in/guy-desau/', role: 'user' },
   { url: 'https://www.linkedin.com/in/kerenlerner/', role: 'user' },
   { url: 'https://www.linkedin.com/in/avital-aviv-a778b01b2/', role: 'user' },
-  { url: 'https://www.linkedin.com/in/edenkatz5/', role: 'user' }
+  { url: 'https://www.linkedin.com/in/edenkatz5/', role: 'user' },
+  { url: 'https://www.linkedin.com/in/lisa-akselrod-35766316/', role: 'user' },
+  { url: 'https://www.linkedin.com/in/reut-menashe/', role: 'user' }
 ];
 
 Deno.serve(async (req) => {
@@ -63,9 +65,11 @@ Deno.serve(async (req) => {
         }
 
         // Update user with verified status
+        const existingData = user.data || {};
         await base44.asServiceRole.entities.User.update(user.id, {
             role: matchedProfile.role,
             data: {
+                ...existingData,
                 linkedin_profile: `https://www.${normalizedInput}`,
                 linkedin_verified: true,
                 linkedin_name: profile.name,

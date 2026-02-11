@@ -8,7 +8,8 @@ export default function Layout({ children, currentPageName }) {
     queryKey: ['user'],
     queryFn: async () => {
       try {
-        return await base44.auth.me();
+        const userData = await base44.auth.me();
+        return userData;
       } catch (error) {
         // User not authenticated - redirect to login
         if (currentPageName !== 'LinkedInVerification') {
@@ -17,6 +18,8 @@ export default function Layout({ children, currentPageName }) {
         return null;
       }
     },
+    retry: 1,
+    staleTime: 0
   });
 
   // Redirect to verification if user is not verified
