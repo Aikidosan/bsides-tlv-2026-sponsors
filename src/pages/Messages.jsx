@@ -4,13 +4,14 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
-import { Send, ArrowLeft } from 'lucide-react';
+import { Send, ArrowLeft, Reply } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
 
 export default function Messages() {
   const [newMessage, setNewMessage] = useState('');
+  const [replyingTo, setReplyingTo] = useState(null);
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
 
@@ -20,10 +21,16 @@ export default function Messages() {
   });
 
   const sendMutation = useMutation({
-    mutationFn: (content) => base44.entities.Message.create({ content, channel: 'app' }),
+    mutationFn: ({ content, parent_message_id }) => 
+      base44.entities.Message.create({ 
+        content, 
+        channel: 'app',
+        ...(parent_message_id && { parent_message_id })
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries(['messages']);
       setNewMessage('');
+      setReplyingTo(null);
     },
   });
 
@@ -38,11 +45,37 @@ export default function Messages() {
   const handleSend = (e) => {
     e.preventDefault();
     if (newMessage.trim()) {
-      sendMutation.mutate(newMessage);
+      sendMutation.mutate({
+        content: newMessage,
+        parent_message_id: replyingTo?.id
+      });
     }
   };
 
+  const handleReply = (msg) => {
+    setReplyingTo(msg);
+    document.querySelector('input[placeholder*="message"]')?.focus();
+  };
+
   const sortedMessages = [...(messages || [])].reverse();
+
+  // Group messages with their replies
+  const messageThreads = sortedMessages.reduce((acc, msg) => {
+    if (!msg.parent_message_id) {
+      acc.push({ main: msg, replies: [] });
+    }
+    return acc;
+  }, []);
+
+  // Add replies to their parent messages
+  sortedMessages.forEach(msg => {
+    if (msg.parent_message_id) {
+      const parentThread = messageThreads.find(t => t.main.id === msg.parent_message_id);
+      if (parentThread) {
+        parentThread.replies.push(msg);
+      }
+    }
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100">
@@ -64,24 +97,58 @@ export default function Messages() {
         <Card className="h-[600px] flex flex-col bg-white">
           {/* Messages List */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {sortedMessages.length === 0 ? (
+            {messageThreads.length === 0 ? (
               <div className="text-center text-gray-500 mt-12">
                 No messages yet. Start the conversation!
               </div>
             ) : (
-              sortedMessages.map((msg) => (
-                <div key={msg.id} className="space-y-1">
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-semibold text-sm text-gray-900">
-                      {msg.created_by?.split('@')[0] || 'Anonymous'}
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      {format(new Date(msg.created_date), 'MMM d, h:mm a')}
-                    </span>
+              messageThreads.map((thread) => (
+                <div key={thread.main.id} className="space-y-2">
+                  {/* Main Message */}
+                  <div className="space-y-1 group">
+                    <div className="flex items-baseline gap-2">
+                      <span className="font-semibold text-sm text-gray-900">
+                        {thread.main.created_by?.split('@')[0] || 'Anonymous'}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {format(new Date(thread.main.created_date), 'MMM d, h:mm a')}
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <div className="bg-gray-100 rounded-lg p-3 max-w-[80%]">
+                        <p className="text-sm text-gray-900">{thread.main.content}</p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleReply(thread.main)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8"
+                      >
+                        <Reply className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="bg-gray-100 rounded-lg p-3 inline-block max-w-[80%]">
-                    <p className="text-sm text-gray-900">{msg.content}</p>
-                  </div>
+
+                  {/* Replies */}
+                  {thread.replies.length > 0 && (
+                    <div className="ml-8 space-y-2 border-l-2 border-gray-200 pl-4">
+                      {thread.replies.map((reply) => (
+                        <div key={reply.id} className="space-y-1">
+                          <div className="flex items-baseline gap-2">
+                            <span className="font-semibold text-xs text-gray-700">
+                              {reply.created_by?.split('@')[0] || 'Anonymous'}
+                            </span>
+                            <span className="text-xs text-gray-400">
+                              {format(new Date(reply.created_date), 'MMM d, h:mm a')}
+                            </span>
+                          </div>
+                          <div className="bg-blue-50 rounded-lg p-2 max-w-[80%]">
+                            <p className="text-sm text-gray-900">{reply.content}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))
             )}
@@ -90,11 +157,28 @@ export default function Messages() {
 
           {/* Input Form */}
           <form onSubmit={handleSend} className="border-t p-4">
+            {replyingTo && (
+              <div className="mb-2 flex items-center gap-2 bg-blue-50 rounded p-2">
+                <Reply className="w-4 h-4 text-blue-600" />
+                <span className="text-sm text-gray-700 flex-1">
+                  Replying to <strong>{replyingTo.created_by?.split('@')[0]}</strong>: {replyingTo.content.substring(0, 50)}...
+                </span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setReplyingTo(null)}
+                  className="h-6 text-xs"
+                >
+                  Cancel
+                </Button>
+              </div>
+            )}
             <div className="flex gap-2">
               <Input
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Type your message..."
+                placeholder={replyingTo ? "Type your reply..." : "Type your message..."}
                 className="flex-1"
               />
               <Button 
