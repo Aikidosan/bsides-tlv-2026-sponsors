@@ -12,6 +12,7 @@ import CountdownClock from '../components/dashboard/CountdownClock';
 import MilestoneTracker from '../components/dashboard/MilestoneTracker';
 import ActivityTracker from '../components/dashboard/ActivityTracker';
 import TeamCalendlyLinks from '../components/TeamCalendlyLinks';
+import DashboardCalendar from '../components/dashboard/DashboardCalendar';
 import { format } from 'date-fns';
 
 export default function Dashboard() {
@@ -294,6 +295,7 @@ export default function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 gap-6">
+          <DashboardCalendar />
           <TeamCalendlyLinks />
           <TasksOverview tasks={tasks || []} />
         </div>
