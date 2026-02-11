@@ -27,10 +27,13 @@ export default function LinkedInVerification() {
       const response = await base44.functions.invoke('linkedinAuth', {});
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (data.verified) {
-        queryClient.invalidateQueries(['user']);
-        window.location.href = '/';
+        await queryClient.invalidateQueries(['user']);
+        await queryClient.refetchQueries(['user']);
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
       } else {
         setError(data.message || 'LinkedIn profile not authorized for this app');
       }
