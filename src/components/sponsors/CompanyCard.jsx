@@ -142,106 +142,103 @@ export default function CompanyCard({ company, onClick, onAIResearch }) {
       onClick={onClick}
     >
       <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <Building2 className="w-5 h-5 text-indigo-600" />
-              <h3 className="font-bold text-lg">{company.name}</h3>
-              {company.profile_type === 'public' && (
-                <Badge className="bg-blue-100 text-blue-800 text-xs flex items-center gap-1">
-                  <Globe className="w-3 h-3" />
-                  Public
-                </Badge>
-              )}
-              {company.profile_type === 'private' && (
-                <Badge className="bg-gray-100 text-gray-800 text-xs flex items-center gap-1">
-                  <Lock className="w-3 h-3" />
-                  Private
-                </Badge>
-              )}
-              {company.profile_type === 'public' && company.stock_symbol && (
-                <Badge variant="outline" className="text-xs font-semibold">
-                  {company.stock_symbol}
-                </Badge>
-              )}
-              {hasAlumniConnection && (
-                <Badge className="bg-amber-500 text-white text-xs flex items-center gap-1">
-                  <GraduationCap className="w-3 h-3" />
-                  Warm Lead
-                </Badge>
-              )}
-              {leadOwner && (
-                <Badge className="bg-indigo-500 text-white text-xs flex items-center gap-1">
-                  <User className="w-3 h-3" />
-                  {leadOwner}
-                </Badge>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Badge className={statusColors[company.status] + " border"}>
-                {company.status.replace('_', ' ')}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Building2 className="w-5 h-5 text-indigo-600" />
+            <h3 className="font-bold text-lg">{company.name}</h3>
+            {company.profile_type === 'public' && (
+              <Badge className="bg-blue-100 text-blue-800 text-xs flex items-center gap-1">
+                <Globe className="w-3 h-3" />
+                Public
               </Badge>
-              {company.sponsorship_tier && (
-                <Badge className={tierColors[company.sponsorship_tier]}>
-                  {company.sponsorship_tier}
-                </Badge>
-              )}
-              {company.past_sponsor_years && company.past_sponsor_years.length > 0 && (
-                company.past_sponsor_years.map((year) => (
-                  <Badge key={year} className={yearColors[year] || "bg-gray-500 text-white"}>
-                    Sponsor {year}
-                  </Badge>
-                ))
-              )}
-            </div>
-          </div>
-          
-          <div className="text-right space-y-2">
+            )}
+            {company.profile_type === 'private' && (
+              <Badge className="bg-gray-100 text-gray-800 text-xs flex items-center gap-1">
+                <Lock className="w-3 h-3" />
+                Private
+              </Badge>
+            )}
+            {company.profile_type === 'public' && company.stock_symbol && (
+              <Badge variant="outline" className="text-xs font-semibold">
+                {company.stock_symbol}
+              </Badge>
+            )}
+            {hasAlumniConnection && (
+              <Badge className="bg-amber-500 text-white text-xs flex items-center gap-1">
+                <GraduationCap className="w-3 h-3" />
+                Warm Lead
+              </Badge>
+            )}
+            {leadOwner && (
+              <Badge className="bg-indigo-500 text-white text-xs flex items-center gap-1">
+                <User className="w-3 h-3" />
+                {leadOwner}
+              </Badge>
+            )}
             {company.sponsorship_amount > 0 && (
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-xl font-bold text-green-600 ml-auto">
                 ${company.sponsorship_amount.toLocaleString()}
               </p>
             )}
-            {(company.market_cap || company.stock_price || company.analyst_rating || company.valuation || company.funding_raised) && (
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3 space-y-2 border border-blue-100">
-                {company.market_cap && (
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs text-gray-600 whitespace-nowrap">Market Cap:</span>
-                    <span className="text-sm font-bold text-gray-900">
-                      {company.market_cap >= 1000000000 
-                        ? `$${(company.market_cap / 1000000000).toFixed(2)}B`
-                        : `$${(company.market_cap / 1000000).toFixed(0)}M`
-                      }
-                    </span>
-                  </div>
-                )}
-                {company.stock_price && (
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs text-gray-600 whitespace-nowrap">Stock Price:</span>
-                    <span className="text-sm font-bold text-gray-900">${company.stock_price.toFixed(2)}</span>
-                  </div>
-                )}
-                {company.analyst_rating && (
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs text-gray-600 whitespace-nowrap">Rating:</span>
-                    <Badge className="text-xs font-semibold bg-blue-500 text-white border-0">{company.analyst_rating}</Badge>
-                  </div>
-                )}
-                {company.valuation && (
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs text-gray-600 whitespace-nowrap">Valuation:</span>
-                    <span className="text-sm font-bold text-gray-900">${(company.valuation / 1000000).toFixed(0)}M</span>
-                  </div>
-                )}
-                {company.funding_raised && (
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="text-xs text-gray-600 whitespace-nowrap">Funding:</span>
-                    <span className="text-sm font-bold text-gray-900">${(company.funding_raised / 1000000).toFixed(1)}M</span>
-                  </div>
-                )}
-              </div>
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            <Badge className={statusColors[company.status] + " border"}>
+              {company.status.replace('_', ' ')}
+            </Badge>
+            {company.sponsorship_tier && (
+              <Badge className={tierColors[company.sponsorship_tier]}>
+                {company.sponsorship_tier}
+              </Badge>
+            )}
+            {company.past_sponsor_years && company.past_sponsor_years.length > 0 && (
+              company.past_sponsor_years.map((year) => (
+                <Badge key={year} className={yearColors[year] || "bg-gray-500 text-white"}>
+                  Sponsor {year}
+                </Badge>
+              ))
             )}
           </div>
+
+          {(company.market_cap || company.stock_price || company.analyst_rating || company.valuation || company.funding_raised) && (
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3 space-y-2 border border-blue-100">
+              {company.market_cap && (
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs text-gray-600 whitespace-nowrap">Market Cap:</span>
+                  <span className="text-sm font-bold text-gray-900">
+                    {company.market_cap >= 1000000000 
+                      ? `$${(company.market_cap / 1000000000).toFixed(2)}B`
+                      : `$${(company.market_cap / 1000000).toFixed(0)}M`
+                    }
+                  </span>
+                </div>
+              )}
+              {company.stock_price && (
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs text-gray-600 whitespace-nowrap">Stock Price:</span>
+                  <span className="text-sm font-bold text-gray-900">${company.stock_price.toFixed(2)}</span>
+                </div>
+              )}
+              {company.analyst_rating && (
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs text-gray-600 whitespace-nowrap">Rating:</span>
+                  <Badge className="text-xs font-semibold bg-blue-500 text-white border-0">{company.analyst_rating}</Badge>
+                </div>
+              )}
+              {company.valuation && (
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs text-gray-600 whitespace-nowrap">Valuation:</span>
+                  <span className="text-sm font-bold text-gray-900">${(company.valuation / 1000000).toFixed(0)}M</span>
+                </div>
+              )}
+              {company.funding_raised && (
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs text-gray-600 whitespace-nowrap">Funding:</span>
+                  <span className="text-sm font-bold text-gray-900">${(company.funding_raised / 1000000).toFixed(1)}M</span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </CardHeader>
       
