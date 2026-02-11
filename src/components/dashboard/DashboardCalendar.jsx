@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, isToday, addMonths, subMonths } from 'date-fns';
+import TaskDialog from '../tasks/TaskDialog';
+import OutreachDialog from '../outreach/OutreachDialog';
 
 export default function DashboardCalendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedOutreach, setSelectedOutreach] = useState(null);
+  const [showTaskDialog, setShowTaskDialog] = useState(false);
+  const [showOutreachDialog, setShowOutreachDialog] = useState(false);
+  const queryClient = useQueryClient();
 
   const { data: tasks } = useQuery({
     queryKey: ['tasks'],
@@ -17,6 +24,38 @@ export default function DashboardCalendar() {
   const { data: outreachTouches } = useQuery({
     queryKey: ['outreachTouches'],
     queryFn: () => base44.entities.OutreachTouch.list(),
+  });
+
+  const { data: companies } = useQuery({
+    queryKey: ['companies'],
+    queryFn: () => base44.entities.Company.list(),
+  });
+
+  const updateTaskMutation = useMutation({
+    mutationFn: ({ id, data }) => base44.entities.Task.update(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['tasks']);
+      setShowTaskDialog(false);
+      setSelectedTask(null);
+    },
+  });
+
+  const createTaskMutation = useMutation({
+    mutationFn: (data) => base44.entities.Task.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['tasks']);
+      setShowTaskDialog(false);
+      setSelectedTask(null);
+    },
+  });
+
+  const createOutreachMutation = useMutation({
+    mutationFn: (data) => base44.entities.OutreachTouch.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['outreachTouches']);
+      setShowOutreachDialog(false);
+      setSelectedOutreach(null);
+    },
   });
 
   // Get all events for the current month
@@ -35,7 +74,8 @@ export default function DashboardCalendar() {
           type: 'task',
           title: task.title,
           status: task.status,
-          priority: task.priority
+          priority: task.priority,
+          data: task
         });
       }
     });
@@ -46,19 +86,39 @@ export default function DashboardCalendar() {
         events.push({
           type: 'outreach',
           title: `${touch.touch_type} - ${touch.contact_name || 'Contact'}`,
-          touchType: touch.touch_type
+          touchType: touch.touch_type,
+          data: touch
         });
       }
       if (touch.next_touch_date && isSameDay(new Date(touch.next_touch_date), date)) {
         events.push({
           type: 'next_touch',
           title: `Scheduled: ${touch.next_touch_type}`,
-          touchType: touch.next_touch_type
+          touchType: touch.next_touch_type,
+          data: touch
         });
       }
     });
 
     return events;
+  };
+
+  const handleEventClick = (event) => {
+    if (event.type === 'task') {
+      setSelectedTask(event.data);
+      setShowTaskDialog(true);
+    } else if (event.type === 'outreach' || event.type === 'next_touch') {
+      setSelectedOutreach(event.data);
+      setShowOutreachDialog(true);
+    }
+  };
+
+  const handleTaskSave = (data) => {
+    if (selectedTask) {
+      updateTaskMutation.mutate({ id: selectedTask.id, data });
+    } else {
+      createTaskMutation.mutate(data);
+    }
   };
 
   // Get starting day of week (0 = Sunday)
@@ -132,7 +192,8 @@ export default function DashboardCalendar() {
                     {events.slice(0, 2).map((event, idx) => (
                       <div
                         key={idx}
-                        className={`text-[10px] px-1 py-0.5 rounded mb-0.5 truncate ${
+                        onClick={() => handleEventClick(event)}
+                        className={`text-[10px] px-1 py-0.5 rounded mb-0.5 truncate cursor-pointer hover:opacity-80 transition-opacity ${
                           event.type === 'task' 
                             ? event.priority === 'high' || event.priority === 'urgent'
                               ? 'bg-red-100 text-red-700'
@@ -178,6 +239,32 @@ export default function DashboardCalendar() {
           </div>
         </div>
       </CardContent>
+
+      {/* Task Dialog */}
+      {showTaskDialog && (
+        <TaskDialog
+          task={selectedTask}
+          onClose={() => {
+            setShowTaskDialog(false);
+            setSelectedTask(null);
+          }}
+          onSave={handleTaskSave}
+          isSaving={updateTaskMutation.isPending || createTaskMutation.isPending}
+        />
+      )}
+
+      {/* Outreach Dialog */}
+      {showOutreachDialog && (
+        <OutreachDialog
+          companyId={selectedOutreach?.company_id}
+          companies={companies || []}
+          onClose={() => {
+            setShowOutreachDialog(false);
+            setSelectedOutreach(null);
+          }}
+          onSave={(data) => createOutreachMutation.mutate(data)}
+        />
+      )}
     </Card>
   );
 }
