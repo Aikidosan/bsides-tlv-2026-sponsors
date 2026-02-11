@@ -23,7 +23,8 @@ export default function Layout({ children, currentPageName }) {
   useEffect(() => {
     if (!isLoading && user && currentPageName !== 'LinkedInVerification') {
       // Strict check: if linkedin_verified is not explicitly true, redirect
-      if (user.data?.linkedin_verified !== true) {
+      const isVerified = user.data?.linkedin_verified === true || user.data?.data?.linkedin_verified === true;
+      if (!isVerified) {
         window.location.href = '/LinkedInVerification';
       }
     }
@@ -40,7 +41,8 @@ export default function Layout({ children, currentPageName }) {
   }
 
   // Strict verification check: only allow access if linkedin_verified is explicitly true
-  if (user && user.data?.linkedin_verified !== true && currentPageName !== 'LinkedInVerification') {
+  const isVerified = user?.data?.linkedin_verified === true || user?.data?.data?.linkedin_verified === true;
+  if (user && !isVerified && currentPageName !== 'LinkedInVerification') {
     return <div className="min-h-screen flex items-center justify-center">Redirecting to verification...</div>;
   }
 
