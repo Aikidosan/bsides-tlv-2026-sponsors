@@ -275,6 +275,12 @@ export default function Dashboard() {
                   Sponsorship Kit
                 </Button>
               </a>
+              <a href="https://docs.google.com/document/d/1SrbcvlkoEeVTxKaGMLIYxXxzA3z3PxfU/edit" target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" className="border-purple-300 text-purple-700 hover:bg-purple-50">
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  BsidesTLV 2025 Sponsor Kit V5
+                </Button>
+              </a>
             </div>
           </div>
         </div>
