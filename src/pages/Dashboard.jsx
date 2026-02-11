@@ -190,6 +190,25 @@ export default function Dashboard() {
               </Button>
               <Button 
                 onClick={async () => {
+                  if (!confirm('This will check all 141 companies on Google Finance and update their public/private status. This will take about 5 minutes. Continue?')) {
+                    return;
+                  }
+                  try {
+                    const response = await base44.functions.invoke('verifyPublicCompanies', {});
+                    alert(`Checked ${response.data.checked} companies and updated ${response.data.updated} to public with stock symbols!`);
+                    queryClient.invalidateQueries(['companies']);
+                  } catch (error) {
+                    alert('Failed to verify companies: ' + error.message);
+                  }
+                }}
+                variant="outline"
+                className="border-blue-300 text-blue-700 hover:bg-blue-50"
+              >
+                <Building2 className="w-4 h-4 mr-2" />
+                Verify Public Companies
+              </Button>
+              <Button 
+                onClick={async () => {
                   try {
                     const addResponse = await base44.functions.invoke('addMissingPastSponsors', {});
                     const tagResponse = await base44.functions.invoke('tagPastSponsors', {});
