@@ -198,18 +198,14 @@ export default function AdminUsers() {
                         )}
                       </div>
                       <div>
-                        {(user.data?.linkedin_url || user.data?.linkedin_profile || user.data?.data?.linkedin_profile) ? (
-                          <a 
-                            href={user.data?.linkedin_url || user.data?.linkedin_profile || user.data?.data?.linkedin_profile}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-medium text-blue-600 hover:underline cursor-pointer"
-                          >
-                            {user.full_name || 'No name'}
-                          </a>
-                        ) : (
-                          <p className="font-medium">{user.full_name || 'No name'}</p>
-                        )}
+                        <a 
+                          href={user.data?.linkedin_url || user.data?.linkedin_profile || user.data?.data?.linkedin_profile || `https://www.linkedin.com/search/results/people/?keywords=${encodeURIComponent(user.full_name || user.email)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-medium text-blue-600 hover:underline cursor-pointer"
+                        >
+                          {user.full_name || 'No name'}
+                        </a>
                         <p className="text-sm text-gray-600 flex items-center gap-1">
                           <Mail className="w-3 h-3" />
                           {user.email}
