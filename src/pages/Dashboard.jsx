@@ -154,9 +154,9 @@ export default function Dashboard() {
                     <span className="flex items-center gap-1.5 flex-wrap">
                       {users.map((u, idx) => (
                         <span key={u.id}>
-                          {(u.data?.linkedin_url || u.data?.linkedin_profile) ? (
+                          {(u.data?.linkedin_url || u.data?.linkedin_profile || u.data?.data?.linkedin_profile) ? (
                             <a 
-                              href={u.data?.linkedin_url || u.data?.linkedin_profile} 
+                              href={u.data?.linkedin_url || u.data?.linkedin_profile || u.data?.data?.linkedin_profile} 
                               target="_blank" 
                               rel="noopener noreferrer"
                               className="cursor-pointer hover:underline hover:text-green-900 font-semibold"

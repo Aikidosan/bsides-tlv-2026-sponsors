@@ -198,13 +198,12 @@ export default function AdminUsers() {
                         )}
                       </div>
                       <div>
-                        {(user.data?.linkedin_url || user.data?.linkedin_profile) ? (
+                        {(user.data?.linkedin_url || user.data?.linkedin_profile || user.data?.data?.linkedin_profile) ? (
                           <a 
-                            href={user.data?.linkedin_url || user.data?.linkedin_profile}
+                            href={user.data?.linkedin_url || user.data?.linkedin_profile || user.data?.data?.linkedin_profile}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-medium hover:text-blue-600 hover:underline cursor-pointer"
-                            onClick={(e) => e.stopPropagation()}
+                            className="font-medium text-blue-600 hover:underline cursor-pointer"
                           >
                             {user.full_name || 'No name'}
                           </a>
