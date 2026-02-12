@@ -165,7 +165,7 @@ export default function Dashboard() {
                               {u.full_name || u.email}
                             </a>
                           ) : (
-                            <span>{u.full_name || u.email}</span>
+                            <span className="font-semibold">{u.full_name || u.email}</span>
                           )}
                           {idx < users.length - 1 && ', '}
                         </span>
