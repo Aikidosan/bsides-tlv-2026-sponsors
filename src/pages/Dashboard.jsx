@@ -159,7 +159,8 @@ export default function Dashboard() {
                               href={u.data.linkedin_url} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="hover:underline hover:text-green-900"
+                              className="cursor-pointer hover:underline hover:text-green-900 font-semibold"
+                              onClick={(e) => e.stopPropagation()}
                             >
                               {u.full_name || u.email}
                             </a>

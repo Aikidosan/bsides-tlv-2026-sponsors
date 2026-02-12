@@ -203,7 +203,8 @@ export default function AdminUsers() {
                             href={user.data.linkedin_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-medium hover:text-blue-600 hover:underline"
+                            className="font-medium hover:text-blue-600 hover:underline cursor-pointer"
+                            onClick={(e) => e.stopPropagation()}
                           >
                             {user.full_name || 'No name'}
                           </a>
