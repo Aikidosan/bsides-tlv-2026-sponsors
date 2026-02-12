@@ -198,9 +198,9 @@ export default function AdminUsers() {
                         )}
                       </div>
                       <div>
-                        {user.data?.linkedin_url ? (
+                        {(user.data?.linkedin_url || user.data?.linkedin_profile) ? (
                           <a 
-                            href={user.data.linkedin_url}
+                            href={user.data?.linkedin_url || user.data?.linkedin_profile}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="font-medium hover:text-blue-600 hover:underline cursor-pointer"
