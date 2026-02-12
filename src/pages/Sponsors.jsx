@@ -39,21 +39,42 @@ export default function Sponsors() {
     queryFn: () => base44.entities.Company.list('-updated_date'),
   });
 
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: () => base44.auth.me(),
+  });
+
   const createMutation = useMutation({
     mutationFn: (data) => base44.entities.Company.create(data),
-    onSuccess: () => {
+    onSuccess: (newCompany) => {
       queryClient.invalidateQueries(['companies']);
       setShowDialog(false);
       setSelectedCompany(null);
+      logActivity({
+        action: 'created_company',
+        entity_type: 'Company',
+        entity_id: newCompany.id,
+        entity_name: newCompany.name,
+        details: `Added new company to sponsor pipeline`,
+        user
+      });
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => base44.entities.Company.update(id, data),
-    onSuccess: () => {
+    onSuccess: (updatedCompany) => {
       queryClient.invalidateQueries(['companies']);
       setShowDialog(false);
       setSelectedCompany(null);
+      logActivity({
+        action: 'updated_company',
+        entity_type: 'Company',
+        entity_id: updatedCompany.id,
+        entity_name: updatedCompany.name,
+        details: `Updated company information`,
+        user
+      });
     },
   });
 

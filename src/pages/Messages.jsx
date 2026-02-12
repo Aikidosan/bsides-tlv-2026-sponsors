@@ -16,6 +16,11 @@ export default function Messages() {
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
 
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: () => base44.auth.me(),
+  });
+
   const { data: messages } = useQuery({
     queryKey: ['messages'],
     queryFn: () => base44.entities.Message.list('-created_date', 100),
@@ -28,10 +33,18 @@ export default function Messages() {
         channel: 'app',
         ...(parent_message_id && { parent_message_id })
       }),
-    onSuccess: () => {
+    onSuccess: (newMsg) => {
       queryClient.invalidateQueries(['messages']);
       setNewMessage('');
       setReplyingTo(null);
+      logActivity({
+        action: 'sent_message',
+        entity_type: 'Message',
+        entity_id: newMsg.id,
+        entity_name: 'Team Message',
+        details: newMsg.content.substring(0, 100),
+        user
+      });
     },
   });
 
