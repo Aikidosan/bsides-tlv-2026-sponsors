@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
+import { logActivity } from '../components/ActivityLogger';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Send, ArrowLeft, Reply } from 'lucide-react';
