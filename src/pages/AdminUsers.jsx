@@ -198,7 +198,18 @@ export default function AdminUsers() {
                         )}
                       </div>
                       <div>
-                        <p className="font-medium">{user.full_name || 'No name'}</p>
+                        {user.data?.linkedin_url ? (
+                          <a 
+                            href={user.data.linkedin_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-medium hover:text-blue-600 hover:underline"
+                          >
+                            {user.full_name || 'No name'}
+                          </a>
+                        ) : (
+                          <p className="font-medium">{user.full_name || 'No name'}</p>
+                        )}
                         <p className="text-sm text-gray-600 flex items-center gap-1">
                           <Mail className="w-3 h-3" />
                           {user.email}
