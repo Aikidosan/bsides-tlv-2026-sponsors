@@ -149,10 +149,28 @@ export default function Dashboard() {
                   </DropdownMenu>
                 )}
                 {users && users.length > 0 && (
-                  <span className="text-sm text-green-700 bg-green-100 px-3 py-1 rounded-full flex items-center gap-1.5">
+                  <div className="text-sm text-green-700 bg-green-100 px-3 py-1 rounded-full flex items-center gap-1.5">
                     <Users className="w-3 h-3" />
-                    {users.map(u => u.full_name || u.email).join(', ')}
-                  </span>
+                    <span className="flex items-center gap-1.5 flex-wrap">
+                      {users.map((u, idx) => (
+                        <span key={u.id}>
+                          {u.data?.linkedin_url ? (
+                            <a 
+                              href={u.data.linkedin_url} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="hover:underline hover:text-green-900"
+                            >
+                              {u.full_name || u.email}
+                            </a>
+                          ) : (
+                            <span>{u.full_name || u.email}</span>
+                          )}
+                          {idx < users.length - 1 && ', '}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
                 )}
               </div>
               <p className="text-gray-600 mt-1">Fundraising & Event Planning Dashboard</p>
